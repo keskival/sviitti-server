@@ -2,7 +2,9 @@
   "name": "sviitti-server",
   "version": "1.0.0",
   "main": "server.js",
+  "private": true,
   "dependencies": {
+    "bower": "^1.7.1",
     "express": "^4.13.3"
   },
   "devDependencies": {},

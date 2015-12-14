@@ -1,0 +1,20 @@
+{
+  "name": "sviitti-server",
+  "description": "",
+  "main": "server.js",
+  "authors": [
+    "Tero Keski-Valkama <tero.keski-valkama@cybercom.com>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "www/lib",
+    "test",
+    "tests"
+  ]
+}
