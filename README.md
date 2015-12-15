@@ -1,11 +1,13 @@
 Run with:
 > docker-compose up
 
+Features:
+- CouchDB
+- Facebook login, or login with nick name
+
 TODO:
 =====
 
-- Facebook login
-- Login with nick name
 - Bluetooth
 - WLAN
 - NFC
