@@ -1,0 +1,16 @@
+couchdb:  
+  image: klaemo/couchdb
+  ports:
+    - "5984:5984"
+web:
+  build: .
+  working_dir: '/myapp'
+  command: 'npm run start'
+  volumes:
+    - .:/myapp
+  environment:
+    PORT: 8080
+  ports:
+    - '8080:8080'
+  links:
+    - couchdb
