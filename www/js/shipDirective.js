@@ -1,8 +1,9 @@
 angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $timeout) {
   var game;
-  //All the pictures are horizontally aligned with each other, at least within one image file.
-  //The vertical alignment can be deduced from the common center line which can be calculated
-  //from the bounding box without the texts respectively.
+  const extrudeAmount = 40;
+  // All the pictures are horizontally aligned with each other, at least within one image file.
+  // The vertical alignment can be deduced from the common center line which can be calculated
+  // from the bounding box without the texts respectively.
   const plan = {
       legend: {
         image: '/img/balticprincess_2_4.png',
@@ -10,25 +11,34 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
       },
       floors: [
                {
-                 floor: 2,
-                 image: '/img/balticprincess_2_4.png',
-                 bb: [114, 784, 1615, 989]
+                 floor: 12,
+                 image: '/img/balticprincess_9_12.png',
+                 bb: [332, 348, 1386, 488]
                },
                {
-                 floor: 3,
-                 image: '/img/balticprincess_2_4.png',
-                 bb: [113, 495, 1589, 701]
+                 floor: 11,
+                 image: '/img/balticprincess_9_12.png',
+                 bb: [244, 588, 1426, 825]
                },
                {
-                 floor: 4,
-                 image: '/img/balticprincess_2_4.png',
-                 bb: [113, 175, 1604, 381]
+                 floor: 10,
+                 image: '/img/balticprincess_9_12.png',
+                 bb: [208, 876, 1426, 1113]
                },
                {
-                 floor: 5,
+                 floor: 9,
+                 image: '/img/balticprincess_9_12.png',
+                 bb: [142, 1180, 1432, 1385]
+               },
+               {
+                 floor: 8,
                  image: '/img/balticprincess_5_8.png',
-                 bb: [116, 1058, 1606, 1304],
-                 bb_no_text: [116, 1072, 1606, 1276]
+                 bb: [142, 208, 1449, 412]
+               },
+               {
+                 floor: 7,
+                 image: '/img/balticprincess_5_8.png',
+                 bb: [130, 489, 1472, 708]
                },
                {
                  floor: 6,
@@ -37,35 +47,20 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
                  bb_no_text: [122, 784, 1491, 990]
                },
                {
-                 floor: 7,
-                 image: '/img/balticprincess_5_8.png',
-                 bb: [130, 489, 1472, 708]
+                 floor: 4,
+                 image: '/img/balticprincess_2_4.png',
+                 bb: [113, 175, 1604, 381]
                },
                {
-                 floor: 8,
-                 image: '/img/balticprincess_5_8.png',
-                 bb: [142, 208, 1449, 143]
+                 floor: 3,
+                 image: '/img/balticprincess_2_4.png',
+                 bb: [113, 495, 1589, 701]
                },
                {
-                 floor: 9,
-                 image: '/img/balticprincess_9_12.png',
-                 bb: [142, 1180, 1432, 1385]
-               },
-               {
-                 floor: 10,
-                 image: '/img/balticprincess_9_12.png',
-                 bb: [208, 876, 1426, 1113]
-               },
-               {
-                 floor: 11,
-                 image: '/img/balticprincess_9_12.png',
-                 bb: [244, 588, 1426, 825]
-               },
-               {
-                 floor: 12,
-                 image: '/img/balticprincess_9_12.png',
-                 bb: [332, 348, 1386, 488]
-               },
+                 floor: 2,
+                 image: '/img/balticprincess_2_4.png',
+                 bb: [114, 784, 1615, 989]
+               }
                ]
   };
   /**
@@ -74,7 +69,6 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
    * @param height The amount we extrude in pixels
    */
   function getSideBitmap(game, bitmap, height) {
-    console.log("Generating side bitmap.");
     var sideBitmap = game.make.bitmapData(bitmap.width, height);
     for (var x = 0; x < bitmap.width; x++) {
       var count = 0;
@@ -113,7 +107,6 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
         sideBitmap.setPixel(x, extrusion, avg.r, avg.g, avg.b, 255);
       }
     }
-    console.log("Side bitmap done.");
     return sideBitmap;
   }
 
@@ -121,33 +114,56 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
     restrict: 'E',
 
     compile: function (element, attrs) {
-      console.log('Compiling ship-directive: ' + JSON.stringify(attrs));
-      
-      const game = new Phaser.Game(3100, 7000, Phaser.CANVAS, attrs.id, { preload: preload, create: create });
-      var maxWidth = 0;
+      const game = new Phaser.Game(3300, 7000, Phaser.CANVAS, attrs.id, { preload: preload, create: create });
+      var maxWidth = 0, maxHeight = 0;
       var floorPromises = [];
+      var minX = 0;
 
       function preload() {
         plan.floors.forEach(function(floor) {
           game.load.image(floor.image, floor.image);
         });
         plan.floors.forEach(function(floor) {
+          var bb = floor.bb; // floor.bb_no_text || floor.bb;
+          var w = bb[2] - bb[0];
+          var h = bb[3] - bb[1];
+          if (w > maxWidth) {
+            maxWidth = w;
+          }
+          if (h > maxHeight) {
+            maxHeight = h;
+          }
+          if (bb[0] < minX) {
+            minX = bb[0];
+          }
+          floor.w = w;
+          floor.h = h;
+        });
+        plan.floors.forEach(function(floor) {
+          // This is used to calculate the respective alignments.
+          var bb_no_text = floor.bb_no_text || floor.bb;
+          var w_no_text = bb_no_text[2] - bb_no_text[0];
+          var h_no_text = bb_no_text[3] - bb_no_text[1];
+          // How much we must add to y to make this align so that centers are aligned.
+          // Always positive.
+          floor.alignY = (maxHeight - h_no_text) / 2;
+          // How much we must add to x to make this align so that left sides are aligned.
+          // Always positive.
+          floor.alignX = bb_no_text[0] - minX;
+        });
+        plan.floors.forEach(function(floor) {
           var deferred = $q.defer();
           floorPromises.push(deferred.promise);
           $timeout(function() {
             console.log("Cropping: " + floor.floor);
-            var bb = floor.bb; // floor.bb_no_text || floor.bb;
-            var w = bb[2] - bb[0];
-            var h = bb[3] - bb[1];
-            if (w > maxWidth) {
-              maxWidth = w;
-            }
-            floor.bitmap = game.add.bitmapData(w, h);
+            var bb = floor.bb;
+            floor.bitmap = game.add.bitmapData(floor.w, floor.h);
             floor.bitmap.copyRect(floor.image, 
-                new Phaser.Rectangle(bb[0], bb[1], w, h),
+                new Phaser.Rectangle(bb[0], bb[1], floor.w, floor.h),
                 0, 0);
             floor.bitmap.update();
-            floor.sideBitmap = getSideBitmap(game, floor.bitmap, 30);
+            console.log("Creating side bitmap for: " + floor.floor);
+            floor.sideBitmap = getSideBitmap(game, floor.bitmap, extrudeAmount);
             deferred.resolve();
           }, 10);
         });
@@ -158,14 +174,14 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
           var y = 0;
           plan.floors.forEach(function(floor) {
             console.log("Adding floor bitmap: " + floor.floor);
-            floor.bitmap.addToWorld(0, y);
-            y = y + floor.bitmap.height;
+            floor.bitmap.addToWorld(floor.alignX, y + floor.alignY);
+            y = y + maxHeight;
           });
           y = 0;
           plan.floors.forEach(function(floor) {
             console.log("Adding side bitmap: " + floor.floor);
-            floor.sideBitmap.addToWorld(maxWidth + 1, y);
-            y = y + floor.sideBitmap.height;
+            floor.sideBitmap.addToWorld(maxWidth + 10 + floor.alignX, y + 10 );
+            y = y + extrudeAmount;
           });
         });
       }
