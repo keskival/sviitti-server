@@ -95,6 +95,10 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
           sum.r = sum.r + r;
           sum.g = sum.g + g;
           sum.b = sum.b + b;
+          if (r > 0 || g > 0 || b > 0) {
+            console.log("Got non white or black! " + r + "," + g + "," + b +
+                ": " + x + ", " + y);
+          }
         }
       }
       var avg = {
