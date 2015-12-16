@@ -1,4 +1,4 @@
-angular.module('sviitti.directives', []).directive('sviittiShip', function() {
+angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $timeout) {
   var game;
   //All the pictures are horizontally aligned with each other, at least within one image file.
   //The vertical alignment can be deduced from the common center line which can be calculated
@@ -74,6 +74,7 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function() {
    * @param height The amount we extrude in pixels
    */
   function getSideBitmap(game, bitmap, height) {
+    console.log("Generating side bitmap.");
     var sideBitmap = game.make.bitmapData(bitmap.width, height);
     for (var x = 0; x < bitmap.width; x++) {
       var count = 0;
@@ -84,13 +85,16 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function() {
       };
       for (var y = 0; y < bitmap.height; y++) {
         // Going through the bitmap vertically, averaging non-white pixels.
-        var pixel = bitmap.getPixel(x, y);
-        if (pixel.r < 250 || pixel.g < 250 || pixel.b < 250) {
+        var pixel = bitmap.getPixel32(x, y);
+        var r = ( pixel       ) & 0xFF;
+        var g = ( pixel >>  8 ) & 0xFF;
+        var b = ( pixel >> 16 ) & 0xFF;
+        if (r < 250 || g < 250 || b < 250) {
           // Non-white.
           count++;
-          sum.r = sum.r + pixel.r;
-          sum.g = sum.g + pixel.g;
-          sum.b = sum.b + pixel.b;
+          sum.r = sum.r + r;
+          sum.g = sum.g + g;
+          sum.b = sum.b + b;
         }
       }
       var avg = {
@@ -109,6 +113,7 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function() {
         sideBitmap.setPixel(x, extrusion, avg.r, avg.g, avg.b, 255);
       }
     }
+    console.log("Side bitmap done.");
     return sideBitmap;
   }
 
@@ -118,7 +123,7 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function() {
     compile: function (element, attrs) {
       console.log('Compiling ship-directive: ' + JSON.stringify(attrs));
       
-      const game = new Phaser.Game(800, 600, Phaser.CANVAS, attrs.id, { preload: preload, create: create });
+      const game = new Phaser.Game(3100, 7000, Phaser.CANVAS, attrs.id, { preload: preload, create: create });
 
       function preload() {
         plan.floors.forEach(function(floor) {
@@ -127,20 +132,40 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function() {
       }
 
       function create() {
-        var y = 0;
+        var y = 0,
+            maxWidth = 0;
+        var floorPromises = [];
         plan.floors.forEach(function(floor) {
-          var bb = floor.bb; // floor.bb_no_text || floor.bb;
-          var w = bb[2] - bb[0];
-          var h = bb[3] - bb[1];
-          floor.bitmap = game.add.bitmapData(w, h);
-          floor.bitmap.copyRect(floor.image, 
-              new Phaser.Rectangle(bb[0], bb[1], w, h),
-              0, 0);
-          floor.sideBitmap = getSideBitmap(game, floor.bitmap, 30);
-          floor.bitmap.addToWorld(0, y);
-          y = y + floor.bitmap.height;
-          floor.sideBitmap.addToWorld(0, y);
-          y = y + floor.sideBitmap.height;
+          var deferred = $q.defer();
+          floorPromises.push(deferred.promise);
+          $timeout(function() {
+            console.log("Cropping: " + floor.floor);
+            var bb = floor.bb; // floor.bb_no_text || floor.bb;
+            var w = bb[2] - bb[0];
+            var h = bb[3] - bb[1];
+            if (w > maxWidth) {
+              maxWidth = w;
+            }
+            floor.bitmap = game.add.bitmapData(w, h);
+            floor.bitmap.copyRect(floor.image, 
+                new Phaser.Rectangle(bb[0], bb[1], w, h),
+                0, 0);
+            floor.sideBitmap = getSideBitmap(game, floor.bitmap, 30);
+            deferred.resolve();
+          }, 0);
+        });
+        $q.all(floorPromises).then(function() {
+          plan.floors.forEach(function(floor) {
+            console.log("Adding floor bitmap: " + floor.floor);
+            floor.bitmap.addToWorld(0, y);
+            y = y + floor.bitmap.height;
+          });
+          y = 0;
+          plan.floors.forEach(function(floor) {
+            console.log("Adding side bitmap: " + floor.floor);
+            floor.sideBitmap.addToWorld(maxWidth + 1, y);
+            y = y + floor.sideBitmap.height;
+          });
         });
       }
 
