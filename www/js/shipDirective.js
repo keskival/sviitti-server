@@ -1,7 +1,8 @@
-angular.module('sviitti.directives', []).directive('sviitti-ship', function() {
-//All the pictures are horizontally aligned with each other, at least within one image file.
-//The vertical alignment can be deduced from the common center line which can be calculated
-//from the bounding box without the texts respectively.
+angular.module('sviitti.directives', []).directive('sviittiShip', function() {
+  var game;
+  //All the pictures are horizontally aligned with each other, at least within one image file.
+  //The vertical alignment can be deduced from the common center line which can be calculated
+  //from the bounding box without the texts respectively.
   const plan = {
       legend: {
         image: '/img/balticprincess_2_4.png',
@@ -72,7 +73,7 @@ angular.module('sviitti.directives', []).directive('sviitti-ship', function() {
    * @param bitmap The floorplan bitmap
    * @param height The amount we extrude in pixels
    */
-  function getSideBitmap(bitmap, height) {
+  function getSideBitmap(game, bitmap, height) {
     var sideBitmap = game.make.bitmapData(bitmap.width, height);
     for (var x = 0; x < bitmap.width; x++) {
       var count = 0;
@@ -93,43 +94,58 @@ angular.module('sviitti.directives', []).directive('sviitti-ship', function() {
         }
       }
       var avg = {
-          r: sum.r / count,
-          g: sum.g / count,
-          b: sum.b / count,
+          r: 255,
+          g: 255,
+          b: 255,
       };
+      if (count > 0) {
+        avg = {
+            r: sum.r / count,
+            g: sum.g / count,
+            b: sum.b / count,
+        };
+      }
       for (var extrusion = 0; extrusion < height; extrusion++) {
         sideBitmap.setPixel(x, extrusion, avg.r, avg.g, avg.b, 255);
       }
     }
     return sideBitmap;
   }
-  function preload() {
-    plan.floors.forEach(function(floor) {
-      game.load.image(floor.image, floor.image);
-    });
-  }
-  function create() {
-    var y = 0;
-    plan.floors.forEach(function(floor) {
-      var bb = floor.bb_no_text || floor.bb;
-      var w = bb[2] - bb[0];
-      var h = bb[3] - bb[1];
-      floor.bitmap = copyRect(floor.image, 
-          new Rectangle(bb[0], bb[1], w, h),
-          0, 0);
-      floor.sideBitmap = getSideBitmap(floor.bitmap);
-      floor.bitmap.addToWorld(0, y);
-      y = y + floor.bitmap.height;
-      floor.sideBitmap.addToWorld(0, y);
-      y = y + floor.sideBitmap.height;
-    });
-  }
 
   return {
-    restrict: 'A',
+    restrict: 'E',
 
-    link: function (scope, element, attrs) {
-      const game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-ship', { preload: preload, create: create });
+    compile: function (element, attrs) {
+      console.log('Compiling ship-directive: ' + JSON.stringify(attrs));
+      
+      const game = new Phaser.Game(800, 600, Phaser.CANVAS, attrs.id, { preload: preload, create: create });
+
+      function preload() {
+        plan.floors.forEach(function(floor) {
+          game.load.image(floor.image, floor.image);
+        });
+      }
+
+      function create() {
+        var y = 0;
+        plan.floors.forEach(function(floor) {
+          var bb = floor.bb; // floor.bb_no_text || floor.bb;
+          var w = bb[2] - bb[0];
+          var h = bb[3] - bb[1];
+          floor.bitmap = game.add.bitmapData(w, h);
+          floor.bitmap.copyRect(floor.image, 
+              new Phaser.Rectangle(bb[0], bb[1], w, h),
+              0, 0);
+          floor.sideBitmap = getSideBitmap(game, floor.bitmap, 30);
+          floor.bitmap.addToWorld(0, y);
+          y = y + floor.bitmap.height;
+          floor.sideBitmap.addToWorld(0, y);
+          y = y + floor.sideBitmap.height;
+        });
+      }
+
+      return function(scope,elem,attrs) {
+      };
     }
   };
 });

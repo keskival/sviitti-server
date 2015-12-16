@@ -5,7 +5,6 @@ const nano = require('nano')('http://localhost:5984');
 const passport = require('passport');
 
 const FacebookStrategy = require('passport-facebook').Strategy;
-
 const FACEBOOK_APP_ID = '1678939655686347';
 const keys = require('./keys.json');
 // Remember to set this to correct value. Don't put it in GitHub.
@@ -18,6 +17,8 @@ const FACEBOOK_APP_SECRET = keys.FACEBOOK_APP_SECRET;
 const SERVER_ADDRESS = 'http://sviitti.td.local:8080';
 
 const sviitti_db = nano.db.use('sviitti');
+
+const PORT = process.env.PORT || 8080;
 
 app.use(express.static('www'));
 
@@ -53,7 +54,7 @@ app.get('/auth/facebook/callback',
     res.redirect('/');
 });
 
-var server = app.listen(8080, function () {
+var server = app.listen(PORT, function () {
   var host = server.address().address;
   var port = server.address().port;
 
