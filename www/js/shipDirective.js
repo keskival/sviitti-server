@@ -154,9 +154,10 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
             floor.bitmap.copyRect(floor.image, 
                 new Phaser.Rectangle(bb[0], bb[1], w, h),
                 0, 0);
+            floor.bitmap.update();
             floor.sideBitmap = getSideBitmap(game, floor.bitmap, 30);
             deferred.resolve();
-          }, 0);
+          }, 10);
         });
         $q.all(floorPromises).then(function() {
           plan.floors.forEach(function(floor) {
