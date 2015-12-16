@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('sviitti', ['ionic', 'sviitti.controllers', 'sviitti.services', 'sviitti.directives'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -43,6 +43,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         'tab-welcome': {
           templateUrl: 'templates/tab-welcome.html',
           controller: 'WelcomeCtrl'
+        }
+      }
+  })
+  .state('tab.ship', {
+    url: '/ship',
+    views: {
+        'tab-ship': {
+          templateUrl: 'templates/tab-ship.html',
+          controller: 'ShipCtrl'
         }
       }
   })

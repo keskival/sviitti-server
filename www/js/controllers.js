@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('sviitti.controllers', [])
 
 .controller('DashCtrl', function($scope) {})
 
@@ -25,4 +25,7 @@ angular.module('starter.controllers', [])
   $scope.setNickname = function (nickname) {
     $rootScope.nickname = nickname;
   }
+})
+
+.controller('ShipCtrl', function($scope, $rootScope) {
 });
