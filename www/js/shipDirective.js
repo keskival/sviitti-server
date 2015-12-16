@@ -95,10 +95,6 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
           sum.r = sum.r + r;
           sum.g = sum.g + g;
           sum.b = sum.b + b;
-          if (r > 0 || g > 0 || b > 0) {
-            console.log("Got non white or black! " + r + "," + g + "," + b +
-                ": " + x + ", " + y);
-          }
         }
       }
       var avg = {
@@ -128,17 +124,13 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
       console.log('Compiling ship-directive: ' + JSON.stringify(attrs));
       
       const game = new Phaser.Game(3100, 7000, Phaser.CANVAS, attrs.id, { preload: preload, create: create });
+      var maxWidth = 0;
+      var floorPromises = [];
 
       function preload() {
         plan.floors.forEach(function(floor) {
           game.load.image(floor.image, floor.image);
         });
-      }
-
-      function create() {
-        var y = 0,
-            maxWidth = 0;
-        var floorPromises = [];
         plan.floors.forEach(function(floor) {
           var deferred = $q.defer();
           floorPromises.push(deferred.promise);
@@ -159,7 +151,11 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function($q, $
             deferred.resolve();
           }, 10);
         });
+      }
+
+      function create() {
         $q.all(floorPromises).then(function() {
+          var y = 0;
           plan.floors.forEach(function(floor) {
             console.log("Adding floor bitmap: " + floor.floor);
             floor.bitmap.addToWorld(0, y);
