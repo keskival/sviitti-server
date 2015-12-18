@@ -2,13 +2,13 @@ angular.module('sviitti.services', [])
 .service('Wireless', function($q) {
   return {
     init: function($scope) {
-      if (ble) {
-        ble.showBluetoothSettings(function(settings) {
+      if (window.ble) {
+        window.ble.showBluetoothSettings(function(settings) {
           console.log("Got settings: " + JSON.stringify(settings));
         }, function(error) {
           console.log("Error in init: " + error);
         });
-        ble.enable(function() {
+        window.ble.enable(function() {
           console.log("Bluetooth enabled.");
         }, function() {
           console.log("Could not enable bluetooth.");
@@ -17,9 +17,9 @@ angular.module('sviitti.services', [])
     },
     getBssid: function() {
       var deferred = $q.defer();
-      if (WifiWizard) {
+      if (window.WifiWizard) {
         // Running on mobile
-        WifiWizard.getScanResults(function(networks) {
+        window.WifiWizard.getScanResults(function(networks) {
           if (networks && networks.length > 0) {
             var best = {};
             networks.forEach(function(network) {
@@ -42,8 +42,8 @@ angular.module('sviitti.services', [])
       return deferred.promise;
     },
     getBleInfo: function(cb) {
-      if (ble) {
-        ble.startScan([], function(result) {
+      if (window.ble) {
+        window.ble.startScan([], function(result) {
           console.log("Got BLE scan result: " + JSON.stringify(result));
           cb(JSON.stringify(result));
         }, function(error) {
@@ -56,9 +56,9 @@ angular.module('sviitti.services', [])
     },
     getWifiInfo: function() {
       var deferred = $q.defer();
-      if (WifiWizard) {
+      if (window.WifiWizard) {
         // Running on mobile
-        WifiWizard.getScanResults(function(networks) {
+        window.WifiWizard.getScanResults(function(networks) {
           console.log("Got networks: " + JSON.stringify(networks));
           if (networks && networks.length > 0) {
             deferred.resolve(networks.map(function(network) {

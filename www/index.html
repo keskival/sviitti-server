@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <meta http-equiv="Content-Security-Policy" content="default-src *">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'self'">
     <title>Sviitti</title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
@@ -19,7 +19,8 @@
 
     <!-- cordova script (do not load for browsers) -->
     <script type="text/javascript">
-      if (!navigator.userAgent.toLowerCase().match('chrome')) {
+      if (!navigator.userAgent.toLowerCase().match('chrome') &&
+          !navigator.userAgent.toLowerCase().match('firefox')) {
         document.write("<script src='cordova.js'><\/script>");
       }
     </script>
