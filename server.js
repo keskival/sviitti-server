@@ -44,7 +44,7 @@ app.put('/auth/:mac',
 
 app.put('/pos/:mac',
     function(req, res) {
-      // FIXME: Here we should put the latest client position info (bsid) to CouchDB indexed by MAC address.
+      // FIXME: Here we should put the latest client position info (bsid, timestamp) to CouchDB indexed by MAC address.
   });
 
 var server = app.listen(PORT, function () {
