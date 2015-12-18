@@ -21,15 +21,44 @@ angular.module('sviitti.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('WelcomeCtrl', function($scope, $rootScope, $cordovaOauth) {
+.controller('WelcomeCtrl', function($scope, $rootScope, $cordovaOauth, $http, $timeout) {
   $scope.setNickname = function (nickname) {
-    $rootScope.nickname = nickname;
-  }
+    $timeout(function() {
+      $rootScope.$apply(function() {
+        $rootScope.user = {
+            name: nickname
+        };
+      });
+    }, 0);
+  };
+  $scope.logout = function() {
+    $rootScope.user = null;
+  };
   $scope.login = function() {
     $cordovaOauth.facebook("1678939655686347", ["email", "public_profile"],
-        {redirect_uri: "http://www.10.90.135.95.xip.io:8080/callback"})
-    .then(function(result){
-      displayData($http, result.access_token);
+        {redirect_uri: "http://www." + SERVER_IP + ".xip.io:8080/callback"})
+    .then(function(result) {
+      $timeout(function() {
+        $rootScope.$apply(function() {
+          console.log("Facebook login fine with: " + JSON.stringify(result));
+          $rootScope.user = {};
+          $rootScope.user.accessToken = result.access_token;
+          $http.get("https://graph.facebook.com/v2.5/me", {
+            params: {
+              access_token: $rootScope.user.accessToken
+            }
+          }).then(function(meResponse) {
+            $timeout(function() {
+              $rootScope.$apply(function() {
+                console.log("Got Facebook me response: " + JSON.stringify(meResponse));
+                $rootScope.user.name = meResponse.data.name;
+                $rootScope.user.fbid = meResponse.data.id;
+                $rootScope.user.photo = "https://graph.facebook.com/v2.5/" + $rootScope.user.fbid + "/picture";
+              });
+            }, 0)
+          });
+        });
+      }, 0)
     },  function(error){
       alert("Error: " + error);
     });
