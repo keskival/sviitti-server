@@ -1,13 +1,8 @@
 angular.module('sviitti.services', [])
-.service('Wireless', function($q) {
+.service('Wireless', function($q, $timeout, $rootScope) {
   return {
     init: function($scope) {
       if (window.ble) {
-        window.ble.showBluetoothSettings(function(settings) {
-          console.log("Got settings: " + JSON.stringify(settings));
-        }, function(error) {
-          console.log("Error in init: " + error);
-        });
         window.ble.enable(function() {
           console.log("Bluetooth enabled.");
         }, function() {
@@ -43,6 +38,16 @@ angular.module('sviitti.services', [])
     },
     getBleInfo: function(cb) {
       if (window.ble) {
+        window.ble.getAddress(function(result) {
+          $timeout(function() {
+            $rootScope.$apply(function() {
+              $rootScope.btAddress = result;
+            });
+          }, 0);
+          console.log("Got BT address: " + result);
+        }, function(error) {
+          console.log("Got BT error: " + error);
+        });
         window.ble.startScan([], function(result) {
           console.log("Got BLE scan result: " + JSON.stringify(result));
           cb(JSON.stringify(result));

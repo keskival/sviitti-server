@@ -49,6 +49,10 @@ function convertToNativeJS(object) {
 
 module.exports = {
 
+    getAddress: function (success, failure) {
+      cordova.exec(success, failure, 'BLE', 'getAddress', []);
+    },
+  
     scan: function (services, seconds, success, failure) {
         var successWrapper = function(peripheral) {
             convertToNativeJS(peripheral);

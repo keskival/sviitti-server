@@ -57,19 +57,19 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/cordova-plugin-ble-central/www/ble.js",
-        "id": "cordova-plugin-ble-central.ble",
-        "pluginId": "cordova-plugin-ble-central",
-        "clobbers": [
-            "ble"
-        ]
-    },
-    {
         "file": "plugins/com.phonegap.plugins.bluetooth/www/bluetooth.js",
         "id": "com.phonegap.plugins.bluetooth.bluetooth",
         "pluginId": "com.phonegap.plugins.bluetooth",
         "clobbers": [
             "bluetooth"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-ble-central/www/ble.js",
+        "id": "cordova-plugin-ble-central.ble",
+        "pluginId": "cordova-plugin-ble-central",
+        "clobbers": [
+            "ble"
         ]
     }
 ];
@@ -84,8 +84,8 @@ module.exports.metadata =
     "ionic-plugin-keyboard": "1.0.8",
     "cordova-plugin-inappbrowser": "1.1.1",
     "com.pylonproducts.wifiwizard": "0.2.11",
-    "cordova-plugin-ble-central": "1.0.3",
-    "com.phonegap.plugins.bluetooth": "0.9"
+    "com.phonegap.plugins.bluetooth": "0.9",
+    "cordova-plugin-ble-central": "1.0.3"
 }
 // BOTTOM OF METADATA
 });
