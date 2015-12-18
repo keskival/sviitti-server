@@ -27,5 +27,18 @@ angular.module('sviitti.controllers', [])
   }
 })
 
+.controller('WirelessCtrl', function($scope, $rootScope, $timeout, Wireless) {
+  Wireless.init($scope);
+  Wireless.getBleInfo(function(info) {
+    $timeout(function() {
+      $scope.$apply(function() {
+        $scope.bleInfo = info;
+      });
+    }, 0);
+  });
+  $scope.bssid = Wireless.getBssid();
+  $scope.wifiInfo = Wireless.getWifiInfo();
+})
+
 .controller('ShipCtrl', function($scope, $rootScope) {
 });

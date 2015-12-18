@@ -55,6 +55,15 @@ angular.module('sviitti', ['ionic', 'sviitti.controllers', 'sviitti.services', '
         }
       }
   })
+  .state('tab.wireless', {
+    url: '/wireless',
+    views: {
+        'tab-wireless': {
+          templateUrl: 'templates/tab-wireless.html',
+          controller: 'WirelessCtrl'
+        }
+      }
+  })
 
   // Each tab has its own nav history stack:
 

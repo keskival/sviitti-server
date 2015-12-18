@@ -1,4 +1,83 @@
 angular.module('sviitti.services', [])
+.service('Wireless', function($q) {
+  return {
+    init: function($scope) {
+      if (ble) {
+        ble.showBluetoothSettings(function(settings) {
+          console.log("Got settings: " + JSON.stringify(settings));
+        }, function(error) {
+          console.log("Error in init: " + error);
+        });
+        ble.enable(function() {
+          console.log("Bluetooth enabled.");
+        }, function() {
+          console.log("Could not enable bluetooth.");
+        });
+      }
+    },
+    getBssid: function() {
+      var deferred = $q.defer();
+      if (WifiWizard) {
+        // Running on mobile
+        WifiWizard.getScanResults(function(networks) {
+          if (networks && networks.length > 0) {
+            var best = {};
+            networks.forEach(function(network) {
+              if (!best.level || best.level < network.level) {
+                best.level = network.level;
+                best.BSSID = network.BSSID;
+              }
+            });
+            deferred.resolve(best.BSSID);
+          } else {
+            deferred.resolve("No networks.");
+          }
+        }, function(error) {
+          console.log("Error! " + error);
+          deferred.reject(error);
+        });
+      } else {
+        return "No BSSID available for normal browsers. Use the mobile app.";
+      }
+      return deferred.promise;
+    },
+    getBleInfo: function(cb) {
+      if (ble) {
+        ble.startScan([], function(result) {
+          console.log("Got BLE scan result: " + JSON.stringify(result));
+          cb(JSON.stringify(result));
+        }, function(error) {
+          console.log("Got BLE error: " + error);
+          cb(error);
+        });
+      } else {
+        cb("No BLE.");
+      }
+    },
+    getWifiInfo: function() {
+      var deferred = $q.defer();
+      if (WifiWizard) {
+        // Running on mobile
+        WifiWizard.getScanResults(function(networks) {
+          console.log("Got networks: " + JSON.stringify(networks));
+          if (networks && networks.length > 0) {
+            deferred.resolve(networks.map(function(network) {
+              return network.SSID + ":" + network.level + ":" + network.BSSID;
+            }).join(", "));
+          } else {
+            deferred.resolve("No networks.");
+          }
+        }, function(error) {
+          console.log("Error! " + error);
+          deferred.reject(error);
+        });
+      } else {
+        return "No BSSID available for normal browsers. Use the mobile app.";
+      }
+      return deferred.promise;
+    }
+  };
+})
 
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
