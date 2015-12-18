@@ -35,7 +35,7 @@ angular.module('sviitti.controllers', [])
     $rootScope.user = null;
   };
   $scope.login = function() {
-    $cordovaOauth.facebook("1678939655686347", ["email", "public_profile"],
+    $cordovaOauth.facebook(FACEBOOK_APP_ID, ["email", "public_profile"],
         {redirect_uri: "http://www." + SERVER_IP + ".xip.io:8080/callback"})
     .then(function(result) {
       $timeout(function() {
@@ -67,15 +67,9 @@ angular.module('sviitti.controllers', [])
 
 .controller('WirelessCtrl', function($scope, $rootScope, $timeout, Wireless) {
   Wireless.init($scope);
-  Wireless.getBleInfo(function(info) {
-    $timeout(function() {
-      $scope.$apply(function() {
-        $scope.bleInfo = info;
-      });
-    }, 0);
-  });
-  $scope.bssid = Wireless.getBssid();
-  $scope.wifiInfo = Wireless.getWifiInfo();
+  Wireless.getBleInfo();
+  Wireless.getBssid();
+  Wireless.getWifiInfo();
 })
 
 .controller('ShipCtrl', function($scope, $rootScope) {

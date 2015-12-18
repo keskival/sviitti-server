@@ -2,6 +2,7 @@ angular.module('sviitti.services', [])
 .service('Wireless', function($q, $timeout, $rootScope) {
   return {
     init: function($scope) {
+      $scope.btPeers = [];
       if (window.ble) {
         window.ble.enable(function() {
           console.log("Bluetooth enabled.");
@@ -24,6 +25,11 @@ angular.module('sviitti.services', [])
               }
             });
             deferred.resolve(best.BSSID);
+            $timeout(function() {
+              $rootScope.$apply(function() {
+                $rootScope.bssid = best.BSSID;
+              });
+            }, 0);
           } else {
             deferred.resolve("No networks.");
           }
@@ -36,7 +42,7 @@ angular.module('sviitti.services', [])
       }
       return deferred.promise;
     },
-    getBleInfo: function(cb) {
+    getBleInfo: function() {
       if (window.ble) {
         window.ble.getAddress(function(result) {
           $timeout(function() {
@@ -50,13 +56,17 @@ angular.module('sviitti.services', [])
         });
         window.ble.startScan([], function(result) {
           console.log("Got BLE scan result: " + JSON.stringify(result));
-          cb(JSON.stringify(result));
+          $timeout(function() {
+            $rootScope.$apply(function() {
+              $rootScope.bleInfo = result;
+              $rootScope.btPeers.push(result.id);
+            });
+          }, 0);
         }, function(error) {
           console.log("Got BLE error: " + error);
-          cb(error);
         });
       } else {
-        cb("No BLE.");
+        console.log("No BLE.");
       }
     },
     getWifiInfo: function() {
@@ -66,9 +76,16 @@ angular.module('sviitti.services', [])
         window.WifiWizard.getScanResults(function(networks) {
           console.log("Got networks: " + JSON.stringify(networks));
           if (networks && networks.length > 0) {
-            deferred.resolve(networks.map(function(network) {
+            var networksString = networks.map(function(network) {
               return network.SSID + ":" + network.level + ":" + network.BSSID;
-            }).join(", "));
+            }).join(", ");
+            $timeout(function() {
+              $rootScope.$apply(function() {
+                $rootScope.wifiInfo = networks;
+                $rootScope.wifiInfoString = networksString;
+              });
+            }, 0);
+            deferred.resolve(networksString);
           } else {
             deferred.resolve("No networks.");
           }

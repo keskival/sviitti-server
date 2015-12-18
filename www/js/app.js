@@ -1,6 +1,7 @@
 // Ionic Starter App
 
 var SERVER_IP = "10.90.135.95";
+var FACEBOOK_APP_ID = "1678939655686347";
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
