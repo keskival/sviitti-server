@@ -21,10 +21,19 @@ angular.module('sviitti.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('WelcomeCtrl', function($scope, $rootScope) {
+.controller('WelcomeCtrl', function($scope, $rootScope, $cordovaOauth) {
   $scope.setNickname = function (nickname) {
     $rootScope.nickname = nickname;
   }
+  $scope.login = function() {
+    $cordovaOauth.facebook("1678939655686347", ["email", "public_profile"],
+        {redirect_uri: "http://www.10.90.135.95.xip.io:8080/callback"})
+    .then(function(result){
+      displayData($http, result.access_token);
+    },  function(error){
+      alert("Error: " + error);
+    });
+  };
 })
 
 .controller('WirelessCtrl', function($scope, $rootScope, $timeout, Wireless) {
