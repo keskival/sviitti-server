@@ -7,12 +7,12 @@ Features:
 - Bluetooth Low-Energy
 - WLAN
 - Ship visualization
+- Export PNGs of the ship layout layers for faster use.
 
 TODO:
 =====
 
 - Bluetooth (plain)
-- Export PNGs of the ship layout layers for faster use.
 - Connect Bluetooth MACs to user profiles.
 - Defined WLAN BSSID-locations.
 - Faking indoors-positioning for debugging and testing.
