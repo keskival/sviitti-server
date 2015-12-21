@@ -36,16 +36,18 @@ angular.module('sviitti.directives').directive('sviittiGenerateShipImages', func
           r: 255,
           g: 255,
           b: 255,
+          a: 0
       };
-      if (count > 0) {
+      if (count > 10) {
         avg = {
             r: sum.r / count,
             g: sum.g / count,
             b: sum.b / count,
+            a: 255
         };
       }
       for (var extrusion = 0; extrusion < height; extrusion++) {
-        sideBitmap.setPixel(x, extrusion, avg.r, avg.g, avg.b, 255);
+        sideBitmap.setPixel(x, extrusion, avg.r, avg.g, avg.b, avg.a);
       }
     }
     return sideBitmap;
