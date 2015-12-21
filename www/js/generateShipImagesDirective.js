@@ -24,7 +24,7 @@ angular.module('sviitti.directives').directive('sviittiGenerateShipImages', func
         var g = ( pixel >>  8 ) & 0xFF;
         var b = ( pixel >> 16 ) & 0xFF;
         var a = ( pixel >> 24 ) & 0xFF;
-        if (a > 0) {
+        if (a > 100) {
           // Non-alpha.
           count++;
           sum.r = sum.r + r;
@@ -38,7 +38,7 @@ angular.module('sviitti.directives').directive('sviittiGenerateShipImages', func
           b: 255,
           a: 0
       };
-      if (count > 10) {
+      if (count > 8) {
         avg = {
             r: sum.r / count,
             g: sum.g / count,
@@ -47,9 +47,12 @@ angular.module('sviitti.directives').directive('sviittiGenerateShipImages', func
         };
       }
       for (var extrusion = 0; extrusion < height; extrusion++) {
-        sideBitmap.setPixel(x, extrusion, avg.r, avg.g, avg.b, avg.a);
+        if (avg.a == 255) {
+          sideBitmap.setPixel(x, extrusion, avg.r, avg.g, avg.b, avg.a, false);
+        }
       }
     }
+    sideBitmap.dirty = true;
     return sideBitmap;
   }
 
