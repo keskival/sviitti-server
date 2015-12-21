@@ -1,16 +1,16 @@
-angular.module('sviitti.directives', []).directive('sviittiShip', function(Ship, $q, $timeout) {
+angular.module('sviitti.directives', []);
+
+angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q, $timeout) {
   var game;
   const extrudeAmount = 40;
   const plan = Ship.plan;
 
-  var done = $q.defer();
   return {
     restrict: 'E',
 
     compile: function (element, attrs) {
       const game = new Phaser.Game(3300, 7000, Phaser.CANVAS, attrs.id, { preload: preload, create: create });
       var maxWidth = 0, maxHeight = 0;
-      var floorPromises = [];
       var minX = 0;
 
       function preload() {
@@ -46,32 +46,20 @@ angular.module('sviitti.directives', []).directive('sviittiShip', function(Ship,
           // Always positive.
           floor.alignX = bb_no_text[0] - minX;
         });
-        plan.floors.forEach(function(floor) {
-          var deferred = $q.defer();
-          floorPromises.push(deferred.promise);
-          $timeout(function() {
-            floor.bitmap = new BitmapData(game, floor.floorImage);
-            floor.sideBitmap = new BitmapData(game, floor.sideImage);
-            deferred.resolve();
-          }, 10);
-        });
       }
 
       function create() {
-        $q.all(floorPromises).then(function() {
-          var y = 0;
-          plan.floors.forEach(function(floor) {
-            console.log("Adding floor bitmap: " + floor.floor);
-            floor.bitmap.addToWorld(floor.alignX, y + floor.alignY);
-            y = y + maxHeight;
-          });
-          y = 0;
-          plan.floors.forEach(function(floor) {
-            console.log("Adding side bitmap: " + floor.floor);
-            floor.sideBitmap.addToWorld(maxWidth + 10 + floor.alignX, y + 10 );
-            y = y + extrudeAmount;
-          });
-          done.resolve();
+        var y = 0;
+        plan.floors.forEach(function(floor) {
+          console.log("Adding floor bitmap: " + floor.floor);
+          game.add.image(floor.alignX, y + floor.alignY, floor.floorImage);
+          y = y + maxHeight + 10;
+        });
+        y = 0;
+        plan.floors.forEach(function(floor) {
+          console.log("Adding side bitmap: " + floor.floor);
+          game.add.image(maxWidth + 10 + floor.alignX, y + 10, floor.sideImage);
+          y = y + extrudeAmount;
         });
       }
 

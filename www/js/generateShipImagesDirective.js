@@ -1,4 +1,4 @@
-angular.module('sviitti.directives', []).directive('sviittiGenerateShipImages', function(Ship, $q, $timeout) {
+angular.module('sviitti.directives').directive('sviittiGenerateShipImages', function(Ship, $q, $timeout) {
   var game;
   const extrudeAmount = 40;
   const plan = Ship.plan;
@@ -23,8 +23,9 @@ angular.module('sviitti.directives', []).directive('sviittiGenerateShipImages', 
         var r = ( pixel       ) & 0xFF;
         var g = ( pixel >>  8 ) & 0xFF;
         var b = ( pixel >> 16 ) & 0xFF;
-        if (r < 250 || g < 250 || b < 250) {
-          // Non-white.
+        var a = ( pixel >> 24 ) & 0xFF;
+        if (a > 0) {
+          // Non-alpha.
           count++;
           sum.r = sum.r + r;
           sum.g = sum.g + g;
