@@ -1,0 +1,10 @@
+<ion-view view-title="Generate Ship Images">
+  <ion-content>
+    <ion-scroll zooming="true" direction="xy" style="width: 1800px; height: 800px">
+      <sviitti-generate-ship-images id="phaser-ship-generate-images" style="width: 50px; height: 50px;" urls="urls"></sviitti-ship>
+      <p ng-repeat="url in urls">
+        <a ng-href="{{url.dataUrl}}">{{url.name}}</a>
+      </p>
+    </ion-scroll>
+  </ion-content>
+</ion-view>

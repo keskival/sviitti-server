@@ -73,4 +73,10 @@ angular.module('sviitti.controllers', [])
 })
 
 .controller('ShipCtrl', function($scope, $rootScope) {
+})
+.controller('GenerateImagesCtrl', function($scope, $rootScope) {
+  $scope.urls = [];
+  $scope.$watch("urls", function() {
+    console.log("URLs changed!");
+  });
 });

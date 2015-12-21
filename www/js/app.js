@@ -9,7 +9,13 @@ var FACEBOOK_APP_ID = "1678939655686347";
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('sviitti', ['ionic', 'ngCordova', 'sviitti.controllers', 'sviitti.services', 'sviitti.directives'])
-
+.config( [
+    '$compileProvider',
+    function( $compileProvider )
+    {   
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data):/);
+    }
+])
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -64,6 +70,15 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'sviitti.controllers', 'sviitti
         'tab-wireless': {
           templateUrl: 'templates/tab-wireless.html',
           controller: 'WirelessCtrl'
+        }
+      }
+  })
+  .state('tab.generateImages', {
+    url: '/generateImages',
+    views: {
+        'tab-generateImages': {
+          templateUrl: 'templates/tab-generateImages.html',
+          controller: 'GenerateImagesCtrl'
         }
       }
   })
