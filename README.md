@@ -18,6 +18,10 @@ Features:
 TODO:
 =====
 
+- Show nearby friends.
+- Send/receive messages from nearby friends with Socket.io.
+- Show own location.
+- Show arbitrary person location.
 - QR/NFC
 - Test the whole stack
 - Configurable modules
