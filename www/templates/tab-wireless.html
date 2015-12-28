@@ -1,9 +1,16 @@
 <ion-view view-title="Wiress info">
   <ion-content>
-    <ion-list>
-      <ion-item><p>Best BSSID: {{bssid}}</p></ion-item>
-      <ion-item><p>BT address: {{btAddress}}</p></ion-item>
-      <ion-item><p>BT peers: {{btPeers}}</p></ion-item>
-    </ion-list>
+    <ion-scroll direction="xy">
+      <ion-list>
+        <ion-item><p>Best BSSID: {{bssid}}</p></ion-item>
+        <ion-item><p>My BT address: {{btAddress}}</p></ion-item>
+        <ion-item><p>BT peers:</p></ion-item>
+        <ion-item ng-repeat="btPeer in btPeers"><p>{{btPeer.address}}</p></ion-item>
+        <ion-item><p>BT LE peers:</p></ion-item>
+        <ion-item ng-repeat="btLePeer in btLePeers"><p>{{btLePeer}}</p></ion-item>
+        <ion-item><p>Wifi Info:</p></ion-item>
+        <ion-item ng-repeat="wifiString in wifiInfoStrings">{{wifiString}}</p></ion-item>
+      </ion-list>
+    </ion-scroll>
   </ion-content>
 </ion-view>

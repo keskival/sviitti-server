@@ -71,6 +71,14 @@ module.exports = [
         "clobbers": [
             "ble"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-bluetooth-serial/www/bluetoothSerial.js",
+        "id": "cordova-plugin-bluetooth-serial.bluetoothSerial",
+        "pluginId": "cordova-plugin-bluetooth-serial",
+        "clobbers": [
+            "window.bluetoothSerial"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -85,7 +93,8 @@ module.exports.metadata =
     "cordova-plugin-inappbrowser": "1.1.1",
     "com.pylonproducts.wifiwizard": "0.2.11",
     "com.phonegap.plugins.bluetooth": "0.9",
-    "cordova-plugin-ble-central": "1.0.3"
+    "cordova-plugin-ble-central": "1.0.3",
+    "cordova-plugin-bluetooth-serial": "0.4.5"
 }
 // BOTTOM OF METADATA
 });
