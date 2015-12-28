@@ -6,10 +6,15 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
   const plan = Ship.plan;
 
   return {
-    restrict: 'E',
+    restrict: 'A',
 
     compile: function (element, attrs) {
-      const game = new Phaser.Game(3300, 7000, Phaser.CANVAS, attrs.id, { preload: preload, create: create });
+      const parentElement = element[0].childNodes[0];
+      const game = new Phaser.Game(3300, 2900, Phaser.CANVAS, parentElement, { preload: preload, create: create });
+      // Allowing scrolling.
+      const input = new Phaser.Touch(game);
+      input.preventDefault = false;
+      
       var maxWidth = 0, maxHeight = 0;
       var minX = 0;
 
