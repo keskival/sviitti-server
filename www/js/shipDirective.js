@@ -60,7 +60,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
           game.add.image(floor.alignX, y + floor.alignY, floor.floorImage);
           y = y + maxHeight + 10;
         });
-        y = 0;
+        y = 100;
         plan.floors.forEach(function(floor) {
           console.log("Adding side bitmap: " + floor.floor);
           game.add.image(maxWidth + 10 + floor.alignX, y + 10, floor.sideImage);
