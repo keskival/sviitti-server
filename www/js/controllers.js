@@ -67,10 +67,12 @@ angular.module('sviitti.controllers', [])
 
 .controller('WirelessCtrl', function($scope, $rootScope, $timeout, Wireless) {
   Wireless.init($scope);
-  Wireless.getBleInfo();
-  Wireless.getBtInfo();
-  Wireless.getBssid();
-  Wireless.getWifiInfo();
+  $scope.refresh = function() {
+    Wireless.getBleInfo();
+    Wireless.getBtInfo();
+    Wireless.getBssid();
+    Wireless.getWifiInfo();
+  };
 })
 
 .controller('ShipCtrl', function($scope, $rootScope) {

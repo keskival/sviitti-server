@@ -25,8 +25,8 @@ angular.module('sviitti.services')
           if (networks && networks.length > 0) {
             var best = {};
             networks.forEach(function(network) {
-              // The better level is more negative.
-              if (!best.level || best.level > network.level) {
+              // The better level is less negative, except if it's zero for some reason.
+              if (!best.level || (best.level < network.level && network.level != 0)) {
                 best.level = network.level;
                 best.BSSID = network.BSSID;
               }
@@ -101,7 +101,7 @@ angular.module('sviitti.services')
           console.log("Got networks: " + JSON.stringify(networks));
           if (networks && networks.length > 0) {
             var networksStrings = networks.map(function(network) {
-              return network.SSID + ":" + network.level + ":" + network.BSSID;
+              return network.SSID + "|" + network.level + "|" + network.BSSID;
             });
             $timeout(function() {
               $rootScope.$apply(function() {
