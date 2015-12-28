@@ -96,6 +96,15 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'sviitti.controllers', 'sviitti
         }
       }
   })
+  .state('tab.mock', {
+    url: '/mock',
+    views: {
+        'tab-mock': {
+          templateUrl: 'templates/tab-mock.html',
+          controller: 'MockCtrl'
+        }
+      }
+  })
 
   // Each tab has its own nav history stack:
 

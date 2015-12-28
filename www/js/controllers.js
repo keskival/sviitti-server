@@ -77,9 +77,57 @@ angular.module('sviitti.controllers', [])
 
 .controller('ShipCtrl', function($scope, $rootScope) {
 })
+
 .controller('GenerateImagesCtrl', function($scope, $rootScope) {
   $scope.urls = [];
   $scope.$watch("urls", function() {
     console.log("URLs changed!");
+  });
+})
+
+.controller('MockCtrl', function($scope, $rootScope, $timeout, Ship) {
+  $scope.plan = Ship.plan;
+  $scope.form = {
+      fbid: $rootScope.user.fbid || "",
+      btAddress: $rootScope.btAddress || ""
+  };
+  
+  $scope.bssids = Object.keys($scope.plan.bssids).map(function(bssid) {
+    return {
+      bssid: bssid,
+      name: $scope.plan.bssids[bssid].name
+    };
+  });
+  $scope.$watch("form.selectedBssid", function() {
+    if ($scope.form.selectedBssid != null) {
+      $timeout(function() {
+        $rootScope.$apply(function() {
+          $rootScope.bssid = $scope.form.selectedBssid;
+        });
+      }, 0);
+    }
+  });
+  $scope.$watch("form.btAddress", function() {
+    if ($scope.form.btAddress !== "") {
+      $timeout(function() {
+        $rootScope.$apply(function() {
+          $rootScope.btAddress = $scope.form.btAddress;
+        });
+      }, 0);
+    }
+  });
+  $scope.$watch("form.fbid", function() {
+    if ($scope.form.fbid !== "" && $scope.form.fbid != null) {
+      $timeout(function() {
+        $rootScope.$apply(function() {
+          $rootScope.user.fbid = $scope.form.fbid;
+        });
+      }, 0);
+    }
+  });
+  $rootScope.$watch("user.fbid", function() {
+    if ($rootScope.user.fbid !== "" && $rootScope.user.fbid != null) {
+      $rootScope.user.photo = "https://graph.facebook.com/v2.5/" + $rootScope.user.fbid + "/picture";
+    }
   });
 });
