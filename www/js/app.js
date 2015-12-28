@@ -16,7 +16,7 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'sviitti.controllers', 'sviitti
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data):/);
     }
 ])
-.run(function($ionicPlatform, Wireless) {
+.run(function($ionicPlatform, $rootScope, $http, Wireless) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -30,6 +30,19 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'sviitti.controllers', 'sviitti
       StatusBar.styleDefault();
     }
     Wireless.init();
+    function update() {
+      if ($rootScope.btAddress) {
+        $http.put("update", {
+          user: $rootScope.user,
+          bestBssid: $rootScope.bssid,
+          btAddress: $rootScope.btAddress
+        });
+      }
+    }
+    // When user info, location or BT address changes, update the server info.
+    $rootScope.$watch("user", update);
+    $rootScope.$watch("bssid", update);
+    $rootScope.$watch("btAddress", update);
   });
 })
 

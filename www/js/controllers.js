@@ -34,6 +34,7 @@ angular.module('sviitti.controllers', [])
   $scope.logout = function() {
     $rootScope.user = null;
   };
+
   $scope.login = function() {
     $cordovaOauth.facebook(FACEBOOK_APP_ID, ["email", "public_profile"],
         {redirect_uri: "http://www." + SERVER_IP + ".xip.io:8080/callback"})

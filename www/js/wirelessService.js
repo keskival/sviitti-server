@@ -1,5 +1,33 @@
 angular.module('sviitti.services')
 .service('Wireless', function($q, $timeout, $rootScope) {
+  function getBleInfo() {
+    if (window.ble) {
+      window.ble.getAddress(function(result) {
+        $timeout(function() {
+          $rootScope.$apply(function() {
+            $rootScope.btAddress = result;
+          });
+        }, 0);
+        console.log("Got BT address: " + result);
+      }, function(error) {
+        console.log("Got BT error: " + error);
+      });
+      $rootScope.blLePeers = [];
+      window.ble.startScan([], function(result) {
+        console.log("Got BLE scan result: " + JSON.stringify(result));
+        $timeout(function() {
+          $rootScope.$apply(function() {
+            $rootScope.bleInfo = result;
+            $rootScope.btLePeers.push(result.id);
+          });
+        }, 0);
+      }, function(error) {
+        console.log("Got BLE error: " + error);
+      });
+    } else {
+      console.log("No BLE.");
+    }
+  };
   return {
     init: function($scope) {
       $rootScope.btLePeers = [];
@@ -8,6 +36,7 @@ angular.module('sviitti.services')
       if (window.ble) {
         window.ble.enable(function() {
           console.log("Bluetooth enabled.");
+          getBleInfo();
         }, function() {
           console.log("Could not enable bluetooth.");
         });
@@ -26,6 +55,7 @@ angular.module('sviitti.services')
             var best = {};
             networks.forEach(function(network) {
               // The better level is less negative, except if it's zero for some reason.
+              // FIXME: Only accept BSSIDs that have known locations.
               if (!best.level || (best.level < network.level && network.level != 0)) {
                 best.level = network.level;
                 best.BSSID = network.BSSID;
@@ -49,34 +79,7 @@ angular.module('sviitti.services')
       }
       return deferred.promise;
     },
-    getBleInfo: function() {
-      if (window.ble) {
-        window.ble.getAddress(function(result) {
-          $timeout(function() {
-            $rootScope.$apply(function() {
-              $rootScope.btAddress = result;
-            });
-          }, 0);
-          console.log("Got BT address: " + result);
-        }, function(error) {
-          console.log("Got BT error: " + error);
-        });
-        $rootScope.blLePeers = [];
-        window.ble.startScan([], function(result) {
-          console.log("Got BLE scan result: " + JSON.stringify(result));
-          $timeout(function() {
-            $rootScope.$apply(function() {
-              $rootScope.bleInfo = result;
-              $rootScope.btLePeers.push(result.id);
-            });
-          }, 0);
-        }, function(error) {
-          console.log("Got BLE error: " + error);
-        });
-      } else {
-        console.log("No BLE.");
-      }
-    },
+    getBleInfo: getBleInfo,
     getBtInfo: function() {
       if (window.bluetoothSerial) {
         bluetoothSerial.discoverUnpaired(function success(list) {
@@ -109,7 +112,7 @@ angular.module('sviitti.services')
                 $rootScope.wifiInfoStrings = networksStrings;
               });
             }, 0);
-            deferred.resolve(networksString);
+            deferred.resolve(networksStrings);
           } else {
             deferred.resolve("No networks.");
           }

@@ -4,6 +4,7 @@
   "main": "server.js",
   "private": true,
   "dependencies": {
+    "body-parser": "^1.14.2",
     "bower": "^1.7.1",
     "express": "^4.13.3",
     "nano": "^6.1.5",
