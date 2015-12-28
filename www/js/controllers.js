@@ -66,7 +66,6 @@ angular.module('sviitti.controllers', [])
 })
 
 .controller('WirelessCtrl', function($scope, $rootScope, $timeout, Wireless) {
-  Wireless.init($scope);
   $scope.refresh = function() {
     Wireless.getBleInfo();
     Wireless.getBtInfo();
