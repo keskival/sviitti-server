@@ -17,6 +17,7 @@ TODO:
 - Defined WLAN BSSID-locations.
 - Faking indoors-positioning for debugging and testing.
 - Faking Bluetooth id for debugging and testing.
+- Faking Facebook authentication for debugging and testing.
 - QR/NFC
 - Test the whole stack
 - Configurable modules
