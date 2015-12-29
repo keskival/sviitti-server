@@ -8,7 +8,8 @@ var FACEBOOK_APP_ID = "1678939655686347";
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('sviitti', ['ionic', 'ngCordova', 'sviitti.controllers', 'sviitti.services', 'sviitti.directives'])
+angular.module('sviitti', ['ionic', 'ngCordova', 'LocalStorageModule',
+                           'sviitti.controllers', 'sviitti.services', 'sviitti.directives'])
 .config( [
     '$compileProvider',
     function( $compileProvider )
@@ -16,8 +17,26 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'sviitti.controllers', 'sviitti
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data):/);
     }
 ])
-.run(function($ionicPlatform, $rootScope, $http, Wireless) {
+.run(function($ionicPlatform, $rootScope, $http, localStorageService, Wireless) {
   $ionicPlatform.ready(function() {
+    $rootScope.user = localStorageService.get("user");
+    $rootScope.btAddress = localStorageService.get("btAddress");
+    $rootScope.friends = localStorageService.get("friends") || [];
+    $rootScope.$watch("user", function() {
+      if ($rootScope.user != null) {
+          localStorageService.set("user", $rootScope.user);
+      }
+    });
+    $rootScope.$watch("btAddress", function() {
+      if ($rootScope.btAddress != null) {
+          localStorageService.set("btAddress", $rootScope.btAddress);
+      }
+    });
+    $rootScope.$watch("friends", function() {
+      if ($rootScope.friends != null) {
+          localStorageService.set("friends", $rootScope.friends);
+      }
+    });
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
@@ -35,7 +54,8 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'sviitti.controllers', 'sviitti
         $http.put("update", {
           user: $rootScope.user,
           bestBssid: $rootScope.bssid,
-          btAddress: $rootScope.btAddress
+          btAddress: $rootScope.btAddress,
+          friends: $rootScope.friends
         });
       }
     }
@@ -43,6 +63,7 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'sviitti.controllers', 'sviitti
     $rootScope.$watch("user", update);
     $rootScope.$watch("bssid", update);
     $rootScope.$watch("btAddress", update);
+    $rootScope.$watch("friends", update);
   });
 })
 

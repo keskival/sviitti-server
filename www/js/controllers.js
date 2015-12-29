@@ -75,7 +75,15 @@ angular.module('sviitti.controllers', [])
   };
 })
 
-.controller('ShipCtrl', function($scope, $rootScope) {
+.controller('ShipCtrl', function($scope, $rootScope, Ship, Friends) {
+  $scope.plan = Ship.plan;
+  $scope.friends = Friends.friends();
+  $scope.floors = Ship.plan.floors.map(function(floor) {
+    return floor.floor;
+  });
+  $scope.selectFloor = function(floor) {
+    $scope.floor = floor;
+  };
 })
 
 .controller('GenerateImagesCtrl', function($scope, $rootScope) {

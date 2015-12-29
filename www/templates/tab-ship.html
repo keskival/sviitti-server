@@ -1,7 +1,14 @@
 <ion-view view-title="Laiva">
   <ion-content>
-    <ion-scroll zooming="true" direction="xy" style="width: 100vw; height: 85vh;" id="phaser-ship" min-zoom="0.1" sviitti-ship>
-      <div style="position: absolute; left: 0px; top:0px; width: 3300px; height: 2900px;"></div>
+    <div style="height: 10vh">
+      <button class="button button-calm" ng-repeat="floor in floors" ng-click="selectFloor(floor)">
+        {{floor}}
+      </button>
+    </div>
+    <ion-scroll zooming="true" direction="xy" style="width: 100vw; height: 80vh;" id="phaser-ship" min-zoom="0.1"
+     sviitti-ship canvas-width="1700" canvas-height="380">
+     <!-- The next is for scrolling. This large canvas scrolling doesn't seem to work without it. -->
+     <div style="position: absolute; left: 0px; top:0px; width: 1700px; height: 380px;"></div>
     </ion-scroll>
   </ion-content>
 </ion-view>

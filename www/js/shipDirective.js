@@ -1,7 +1,6 @@
 angular.module('sviitti.directives', []);
 
 angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q, $timeout) {
-  var game;
   const extrudeAmount = 40;
   const plan = Ship.plan;
 
@@ -10,15 +9,17 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
 
     compile: function (element, attrs) {
       const parentElement = element[0].childNodes[0];
-      const game = new Phaser.Game(3300, 2900, Phaser.CANVAS, parentElement, { preload: preload, create: create });
+      const game = new Phaser.Game(Number(attrs.canvasWidth), Number(attrs.canvasHeight), Phaser.CANVAS, parentElement,
+          { preload: preload, create: create });
       // Allowing scrolling.
       const input = new Phaser.Touch(game);
       input.preventDefault = false;
       
       var maxWidth = 0, maxHeight = 0;
       var minX = 0;
-
+      
       function preload() {
+        game.load.image("background", "/img/background.png");
         plan.floors.forEach(function(floor) {
           game.load.image(floor.floorImage, floor.floorImage);
           game.load.image(floor.sideImage, floor.sideImage);
@@ -54,21 +55,17 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
       }
 
       function create() {
-        var y = 0;
-        plan.floors.forEach(function(floor) {
-          console.log("Adding floor bitmap: " + floor.floor);
-          game.add.image(floor.alignX, y + floor.alignY, floor.floorImage);
-          y = y + maxHeight + 10;
-        });
-        y = 100;
-        plan.floors.forEach(function(floor) {
-          console.log("Adding side bitmap: " + floor.floor);
-          game.add.image(maxWidth + 10 + floor.alignX, y + 10, floor.sideImage);
-          y = y + extrudeAmount;
-        });
       }
-
       return function(scope,elem,attrs) {
+        scope.$watch("floor", function() {
+          var floor = _.findWhere(plan.floors, {floor: scope.floor});
+          if (floor != null) {
+            game.world.removeAll();
+            game.add.image(0, 0, "background");
+            game.add.image(10 + floor.alignX, 10 + floor.alignY, floor.floorImage);
+            game.add.image(10 + floor.alignX, maxHeight + 60, floor.sideImage);
+          }
+        });
       };
     }
   };
