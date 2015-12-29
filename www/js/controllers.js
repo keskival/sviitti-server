@@ -84,6 +84,13 @@ angular.module('sviitti.controllers', [])
   $scope.selectFloor = function(floor) {
     $scope.floor = floor;
   };
+  $scope.highlight = function(floor) {
+    if (floor === $scope.floor) {
+      return "button-positive";
+    } else {
+      return "button-calm";
+    }
+  };
 })
 
 .controller('GenerateImagesCtrl', function($scope, $rootScope) {
