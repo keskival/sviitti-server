@@ -14,14 +14,15 @@ Features:
 - Faking indoors-positioning for debugging and testing.
 - Faking Bluetooth id for debugging and testing.
 - Faking Facebook authentication for debugging and testing.
+- Show own location.
+- Show friend locations.
 
 TODO:
 =====
 
+- Manage friends.
 - Show nearby friends.
 - Send/receive messages from nearby friends with Socket.io.
-- Show own location.
-- Show arbitrary person location.
 - QR/NFC
 - Test the whole stack
 - Configurable modules
