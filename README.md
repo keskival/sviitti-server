@@ -22,6 +22,7 @@ TODO:
 
 - Manage friends.
 - Show nearby friends.
+- Interactive pop ups for location circles.
 - Send/receive messages from nearby friends with Socket.io.
 - QR/NFC
 - Test the whole stack
