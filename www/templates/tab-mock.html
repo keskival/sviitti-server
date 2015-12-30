@@ -19,6 +19,7 @@
           <ion-radio ng-repeat="bssid in bssids" ng-model="form.selectedBssid" ng-value="bssid.bssid">
             {{bssid.name}}:{{bssid.bssid}}
           </ion-radio>
+          <ion-checkbox ng-model="form.randomFriends">Mock random friends</ion-checkbox>
         </ion-list>
       </form>
     </ion-scroll>

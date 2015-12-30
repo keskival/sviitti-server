@@ -77,7 +77,14 @@ angular.module('sviitti.controllers', [])
 
 .controller('ShipCtrl', function($scope, $rootScope, Ship, Friends) {
   $scope.plan = Ship.plan;
-  $scope.friends = Friends.friends();
+  $rootScope.$watch("mockFriends", function () {
+    Friends.friends().then(function(friends) {
+      $scope.friends = friends;
+    });
+  });
+  Friends.friends().then(function(friends) {
+    $scope.friends = friends;
+  });
   $scope.floors = Ship.plan.floors.map(function(floor) {
     return floor.floor;
   });
@@ -104,7 +111,8 @@ angular.module('sviitti.controllers', [])
   $scope.plan = Ship.plan;
   $scope.form = {
       fbid: $rootScope.user.fbid || "",
-      btAddress: $rootScope.btAddress || ""
+      btAddress: $rootScope.btAddress || "",
+      randomFriends: $rootScope.mockFriends || false
   };
   
   $scope.bssids = Object.keys($scope.plan.bssids).map(function(bssid) {
@@ -129,6 +137,21 @@ angular.module('sviitti.controllers', [])
           $rootScope.btAddress = $scope.form.btAddress;
         });
       }, 0);
+    }
+  });
+  $scope.$watch("form.randomFriends", function() {
+    if ($scope.form.randomFriends) {
+      $rootScope.mockFriends = Object.keys(Ship.plan.bssids).filter(function (a) {
+        return Math.random() > 0.5;
+      }).map(function (bssid) {
+        return {
+          user: "MockUser",
+          bestBssid: bssid,
+          btAddress: "mockBtAddress",
+        };
+      });
+    } else {
+      $rootScope.mockFriends = false;
     }
   });
   $scope.$watch("form.fbid", function() {

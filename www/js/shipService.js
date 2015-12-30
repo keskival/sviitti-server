@@ -12,7 +12,7 @@ angular.module('sviitti.services')
         "e0:3f:49:6a:72:f0": {
           name: "9D44_ASUS",
           floor: 5,
-          x: 100,
+          x: 300,
           y: 100,
           range: 100
         },
@@ -26,35 +26,35 @@ angular.module('sviitti.services')
         "00:1e:ab:52:33:78": {
           name: "timop",
           floor: 6,
-          x: 120,
+          x: 720,
           y: 200,
           range: 100
         },
         "e0:3f:49:6a:72:f4": {
           name: "9D44_5G",
           floor: 7,
-          x: 120,
+          x: 520,
           y: 100,
           range: 100
         },
         "00:1e:ab:08:7a:ec": {
           name: "9D44_VDSL",
           floor: 5,
-          x: 120,
+          x: 920,
           y: 200,
           range: 100
         },
         "5c:6d:20:7c:37:22": {
           name: "PS3-9333999",
           floor: 7,
-          x: 120,
+          x: 420,
           y: 200,
           range: 100
         },
         "90:72:40:21:f4:94": {
           name: "Bruce's Bar and Grill",
           floor: 10,
-          x: 120,
+          x: 620,
           y: 200,
           range: 100
         }

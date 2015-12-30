@@ -1,6 +1,6 @@
 angular.module('sviitti.directives', []);
 
-angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q, $timeout) {
+angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q, $timeout, $rootScope) {
   const extrudeAmount = 40;
   const plan = Ship.plan;
 
@@ -57,15 +57,51 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
       function create() {
       }
       return function(scope,elem,attrs) {
-        scope.$watch("floor", function() {
+        function drawCircle(x, y, color, dotColor, range) {
+          var circle = game.add.graphics(x, y);
+
+          circle.lineStyle(1, 0x202020);
+          circle.beginFill(color, 0.5);
+          circle.drawCircle(0, 0, range);
+          circle.endFill();
+          circle.lineStyle(1, 0xa0a0a0);
+          circle.beginFill(dotColor, 1);
+          circle.drawCircle(0, 0, 4);
+          circle.endFill();
+          return circle;
+        };
+        function drawLocation(bssidInfo, user, isSelf) {
+          var color = 0x1010a0;
+          var dotColor = 0x000000;
+          if (isSelf) {
+            color = 0x10a010;
+            dotColor = 0xff0000;
+          }
+          drawCircle(bssidInfo.x, bssidInfo.y, color, dotColor, bssidInfo.range);
+        };
+        function drawFloor() {
           var floor = _.findWhere(plan.floors, {floor: scope.floor});
           if (floor != null) {
             game.world.removeAll();
             game.add.image(0, 0, "background");
             game.add.image(10 + floor.alignX, 10 + floor.alignY, floor.floorImage);
             game.add.image(10 + floor.alignX, maxHeight + 60, floor.sideImage);
+            // Draw the friends.
+            scope.friends.forEach(function (friend) {
+              if (plan.bssids[friend.bestBssid].floor == floor.floor) {
+                // The friend is on this floor.
+                drawLocation(plan.bssids[friend.bestBssid], friend, false);
+              }
+            });
+            // Draw the user.
+            if (plan.bssids[$rootScope.bssid].floor == floor.floor) {
+              drawLocation(plan.bssids[$rootScope.bssid], $rootScope.user, true);
+            }
           }
-        });
+        };
+        scope.$watch("floor", drawFloor);
+        scope.$watch("friends", drawFloor);
+        $rootScope.$watch("bssid", drawFloor);
       };
     }
   };
