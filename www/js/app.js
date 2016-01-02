@@ -99,6 +99,15 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'LocalStorageModule',
         }
       }
   })
+  .state('tab.nearby', {
+    url: '/nearby',
+    views: {
+        'tab-nearby': {
+          templateUrl: 'templates/tab-nearby.html',
+          controller: 'NearbyCtrl'
+        }
+      }
+  })
   .state('tab.wireless', {
     url: '/wireless',
     views: {

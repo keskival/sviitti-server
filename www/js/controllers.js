@@ -119,6 +119,9 @@ angular.module('sviitti.controllers', [])
   };
 })
 
+.controller('NearbyCtrl', function($scope, $rootScope, $timeout, Wireless) {
+})
+  
 .controller('GenerateImagesCtrl', function($scope, $rootScope) {
   $scope.urls = [];
   $scope.$watch("urls", function() {
