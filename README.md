@@ -16,12 +16,12 @@ Features:
 - Faking Facebook authentication for debugging and testing.
 - Show own location.
 - Show friend locations.
+- Show nearby friends.
 
 TODO:
 =====
 
 - Manage friends.
-- Show nearby friends.
 - Interactive pop ups for location circles.
 - Send/receive messages from nearby friends with Socket.io.
 - QR/NFC
