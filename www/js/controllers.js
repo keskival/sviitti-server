@@ -147,7 +147,7 @@ angular.module('sviitti.controllers', [])
         return {
           user: "MockUser",
           bestBssid: bssid,
-          btAddress: "mockBtAddress",
+          btAddress: "mockBtAddress" + Math.random(),
         };
       });
     } else {

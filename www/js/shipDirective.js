@@ -3,6 +3,8 @@ angular.module('sviitti.directives', []);
 angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q, $timeout, $rootScope) {
   const extrudeAmount = 40;
   const plan = Ship.plan;
+  var friendCircles = {},
+    userCircle;
 
   return {
     restrict: 'A',
@@ -12,13 +14,14 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
       const game = new Phaser.Game(Number(attrs.canvasWidth), Number(attrs.canvasHeight), Phaser.CANVAS, parentElement,
           { preload: preload, create: create });
       // Allowing scrolling.
-      const input = new Phaser.Touch(game);
-      input.preventDefault = false;
-      
+      // input.enabled = false;      
       var maxWidth = 0, maxHeight = 0;
       var minX = 0;
       
       function preload() {
+        game.input.mouse.capture = false;
+        game.input.touch.preventDefault = false;
+
         game.load.image("background", "/img/background.png");
         plan.floors.forEach(function(floor) {
           game.load.image(floor.floorImage, floor.floorImage);
@@ -58,7 +61,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
       }
       return function(scope,elem,attrs) {
         function drawCircle(x, y, color, dotColor, range) {
-          var circle = game.add.graphics(x, y);
+          var circle = game.add.graphics(0, 0);
 
           circle.lineStyle(1, 0x202020);
           circle.beginFill(color, 0.5);
@@ -68,7 +71,12 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
           circle.beginFill(dotColor, 1);
           circle.drawCircle(0, 0, 4);
           circle.endFill();
-          return circle;
+
+          var sprite = game.add.sprite(x, y);
+          sprite.addChild(circle);
+          sprite.inputEnabled = true;
+          // sprite.hitArea = new PIXI.Rectangle(0, 0, range, range);
+          return sprite;
         };
         function drawLocation(bssidInfo, user, isSelf) {
           var color = 0x1010a0;
@@ -77,7 +85,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
             color = 0x10a010;
             dotColor = 0xff0000;
           }
-          drawCircle(bssidInfo.x, bssidInfo.y, color, dotColor, bssidInfo.range);
+          return drawCircle(bssidInfo.x, bssidInfo.y, color, dotColor, bssidInfo.range);
         };
         function drawFloor() {
           var floor = _.findWhere(plan.floors, {floor: scope.floor});
@@ -87,20 +95,65 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
             game.add.image(10 + floor.alignX, 10 + floor.alignY, floor.floorImage);
             game.add.image(10 + floor.alignX, maxHeight + 60, floor.sideImage);
             // Draw the friends.
+            friendCircles = {};
             scope.friends.forEach(function (friend) {
               if (plan.bssids[friend.bestBssid].floor == floor.floor) {
                 // The friend is on this floor.
-                drawLocation(plan.bssids[friend.bestBssid], friend, false);
+                var sprite = drawLocation(plan.bssids[friend.bestBssid], friend, false);
+                friendCircles[friend.btAddress] = sprite;
+                function friendTapped() {
+                  console.log("Clicked friend: " + friend.btAddress);
+                  $timeout(function() {
+                    scope.$apply(function() {
+                      if (scope.selectedFriend == friend.btAddress) {
+                        scope.selectedFriend = undefined;
+                      } else {
+                        scope.selectedFriend = friend.btAddress;
+                      }
+                    });
+                  }, 0);
+                };
+                sprite.events.onInputDown.add(friendTapped, game);
               }
             });
             // Draw the user.
-            if (plan.bssids[$rootScope.bssid].floor == floor.floor) {
-              drawLocation(plan.bssids[$rootScope.bssid], $rootScope.user, true);
+            userCircle = undefined;
+            if ($rootScope.bssid && plan.bssids[$rootScope.bssid].floor == floor.floor) {
+              userCircle = drawLocation(plan.bssids[$rootScope.bssid], $rootScope.user, true);
+              function selfTapped() {
+                console.log("Clicked self.");
+                $timeout(function() {
+                  scope.$apply(function() {
+                    scope.selectedFriend = undefined;
+                  });
+                }, 0);
+              };
+              userCircle.events.onInputDown.add(selfTapped, game);
+            }
+            function bounce(circle) {
+              function enlarge() {
+                var tween = game.add.tween(circle.scale).to( { x: 1.1, y: 1.1 }, 100, Phaser.Easing.Linear.None, true);
+                tween.onComplete.add(shrink, game);
+                return tween;
+              };
+              function shrink() {
+                var tween = game.add.tween(circle.scale).to( { x: 1, y: 1 }, 100, Phaser.Easing.Linear.None, true);
+                tween.onComplete.add(enlarge, game);
+                return tween;
+              };
+              return enlarge();
+            }
+            // Animating the user self, or the selected friend.
+            if (scope.selectedFriend && friendCircles[scope.selectedFriend]) {
+              bounce(friendCircles[scope.selectedFriend]);
+            } else if (userCircle) {
+              bounce(userCircle);
             }
           }
         };
         scope.$watch("floor", drawFloor);
         scope.$watch("friends", drawFloor);
+        scope.$watch("selectedFriend", drawFloor);
         $rootScope.$watch("bssid", drawFloor);
       };
     }
