@@ -79,11 +79,11 @@ angular.module('sviitti.controllers', [])
   $scope.plan = Ship.plan;
   $timeout(function() {
     $scope.$apply(function() {
-      if ($rootScope.bssid && plan.bssids[$rootScope.bssid].floor) {
+      if ($rootScope.bssid && Ship.plan.bssids[$rootScope.bssid].floor) {
         $scope.floor = Ship.plan.bssids[$rootScope.bssid].floor;
       }
     });
-  }, 0);
+  }, 200);
   
   $rootScope.$watch("mockFriends", function () {
     Friends.friends().then(function(friends) {
@@ -119,7 +119,27 @@ angular.module('sviitti.controllers', [])
   };
 })
 
-.controller('NearbyCtrl', function($scope, $rootScope, $timeout, Wireless) {
+.controller('NearbyCtrl', function($scope, $rootScope, $timeout, Wireless, Friends) {
+  Wireless.init();
+  Wireless.getBtInfo();
+  $rootScope.$watch("mockFriends", function () {
+    Friends.peers($rootScope.btPeers).then(function(peers) {
+      $timeout(function() {
+        $scope.$apply(function() {
+          $scope.people = peers;
+        });
+      }, 0);
+    });
+  });
+  $rootScope.$watch("btPeers", function() {
+    Friends.peers($rootScope.btPeers).then(function(peers) {
+      $timeout(function() {
+        $scope.$apply(function() {
+          $scope.people = peers;
+        });
+      }, 0);
+    });
+  });
 })
   
 .controller('GenerateImagesCtrl', function($scope, $rootScope) {

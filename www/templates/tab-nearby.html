@@ -1,8 +1,11 @@
-<ion-view view-title="Wiress info">
+<ion-view view-title="Lähialue">
   <ion-content>
     <ion-scroll direction="y">
       <ion-list>
-        <ion-item></ion-item>
+        <ion-item ng-repeat="person in people">
+          <span>{{person.user}}</span>
+          <img ng-if="user.photo" ng-attr-src="{{user.photo}}"/>
+        </ion-item>
       </ion-list>
     </ion-scroll>
   </ion-content>
