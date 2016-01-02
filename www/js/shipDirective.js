@@ -7,11 +7,12 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
     userCircle;
 
   return {
-    restrict: 'A',
+    restrict: 'E',
 
     compile: function (element, attrs) {
-      const parentElement = element[0].childNodes[0];
-      const game = new Phaser.Game(Number(attrs.canvasWidth), Number(attrs.canvasHeight), Phaser.CANVAS, parentElement,
+      const parentElement = element; // element[0].childNodes[0];
+      const game = new Phaser.Game(Number(attrs.canvasWidth), Number(attrs.canvasHeight), Phaser.CANVAS,
+          parentElement[0],
           { preload: preload, create: create });
       // Allowing scrolling.
       // input.enabled = false;      
@@ -60,6 +61,13 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
       function create() {
       }
       return function(scope,elem,attrs) {
+        scope.onScroll = function() {
+          console.log("Scrolled. Should update Phaser zoom now.");
+          game.scale.scaleMode = Phaser.ScaleManager.NONE;
+          // game.scale.setShowAll();
+          game.scale.refresh();
+        };
+        
         function drawCircle(x, y, color, dotColor, range) {
           var circle = game.add.graphics(0, 0);
 

@@ -7,8 +7,12 @@
         {{floor}}
       </button>
     </div>
-    <ion-scroll zooming="true" direction="xy" style="width: 100vw; height: 80vh;" id="phaser-ship" min-zoom="0.1"
-     sviitti-ship canvas-width="1700" canvas-height="380">
+    <!-- Zooming true causes trouble with touch screen tap handling: The taps do not align with the objects.
+         Something wrong with Ionic ion-scroll and Phaser canvas interaction. -->
+    <ion-scroll zooming="false" direction="xy" style="width: 100vw; height: 80vh;" id="phaser-ship" min-zoom="0.1"
+     on-scroll="onScroll()">
+       <sviitti-ship style="width: 1700px; height: 380px;" canvas-width="1700" canvas-height="380">
+       </sviitti-ship>
     </ion-scroll>
   </ion-content>
 </ion-view>
