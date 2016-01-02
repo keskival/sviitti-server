@@ -80,7 +80,7 @@ angular.module('sviitti.controllers', [])
   $timeout(function() {
     $scope.$apply(function() {
       if ($rootScope.bssid && Ship.plan.bssids[$rootScope.bssid].floor) {
-        $scope.floor = Ship.plan.bssids[$rootScope.bssid].floor;
+        $rootScope.floor = Ship.plan.bssids[$rootScope.bssid].floor;
       }
     });
   }, 200);
@@ -97,14 +97,14 @@ angular.module('sviitti.controllers', [])
     return floor.floor;
   });
   $scope.selectFloor = function(floor) {
-    $scope.floor = floor;
+    $rootScope.floor = floor;
   };
   $scope.selectFriend = function(friend) {
     $rootScope.selectedFriend = friend.btAddress;
-    $scope.floor = Ship.plan.bssids[friend.bestBssid].floor;
+    $rootScope.floor = Ship.plan.bssids[friend.bestBssid].floor;
   };
   $scope.highlight = function(floor) {
-    if (floor === $scope.floor) {
+    if (floor === $rootScope.floor) {
       return "button-positive";
     } else {
       return "button-calm";

@@ -102,7 +102,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
           return sprite;
         };
         function drawFloor() {
-          var floor = _.findWhere(plan.floors, {floor: scope.floor});
+          var floor = _.findWhere(plan.floors, {floor: $rootScope.floor});
           if (floor != null) {
             game.world.removeAll();
             game.add.image(0, 0, "background");
@@ -172,7 +172,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
             sprite.events.onInputDown.add(function() {
               $timeout(function() {
                 scope.$apply(function() {
-                  scope.floor = floor.floor;
+                  $rootScope.floor = floor.floor;
                 });
               }, 0);
             }, game);
@@ -190,7 +190,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
             offset = offset + extrudeAmount;
           });
         };
-        scope.$watch("floor", drawFloor);
+        $rootScope.$watch("floor", drawFloor);
         scope.$watch("friends", drawFloor);
         $rootScope.$watch("selectedFriend", drawFloor);
         $rootScope.$watch("bssid", drawFloor);
