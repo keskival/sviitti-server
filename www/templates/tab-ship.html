@@ -9,10 +9,19 @@
     </div>
     <!-- Zooming true causes trouble with touch screen tap handling: The taps do not align with the objects.
          Something wrong with Ionic ion-scroll and Phaser canvas interaction. -->
-    <ion-scroll zooming="false" direction="xy" style="width: 100vw; height: 80vh;" id="phaser-ship" min-zoom="0.1"
+    <ion-scroll zooming="false" direction="xy" style="width: 100vw; height: 60vh;" id="phaser-ship" min-zoom="0.1"
      on-scroll="onScroll()">
        <sviitti-ship style="width: 1700px; height: 380px;" canvas-width="1700" canvas-height="380">
        </sviitti-ship>
     </ion-scroll>
+    <div style="height: 20vh; width: 100vh;">
+      <h3>Ystävät:</h3>
+      <p>
+      <button class="button" ng-class="highlightFriend(friend)"
+        ng-repeat="friend in friends" ng-click="selectFriend(friend)">
+        {{friend.user}}
+      </button>
+      </p>
+    </div>
   </ion-content>
 </ion-view>

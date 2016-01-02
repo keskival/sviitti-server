@@ -75,8 +75,16 @@ angular.module('sviitti.controllers', [])
   };
 })
 
-.controller('ShipCtrl', function($scope, $rootScope, Ship, Friends) {
+.controller('ShipCtrl', function($scope, $rootScope, $timeout, Ship, Friends) {
   $scope.plan = Ship.plan;
+  $timeout(function() {
+    scope.$apply(function() {
+      if ($rootScope.bssid && plan.bssids[$rootScope.bssid].floor) {
+        $scope.floor = Ship.plan.bssids[$rootScope.bssid].floor;
+      }
+    });
+  }, 0);
+  
   $rootScope.$watch("mockFriends", function () {
     Friends.friends().then(function(friends) {
       $scope.friends = friends;
@@ -91,8 +99,19 @@ angular.module('sviitti.controllers', [])
   $scope.selectFloor = function(floor) {
     $scope.floor = floor;
   };
+  $scope.selectFriend = function(friend) {
+    $rootScope.selectedFriend = friend.btAddress;
+    $scope.floor = Ship.plan.bssids[friend.bestBssid].floor;
+  };
   $scope.highlight = function(floor) {
     if (floor === $scope.floor) {
+      return "button-positive";
+    } else {
+      return "button-calm";
+    }
+  };
+  $scope.highlightFriend = function(friend) {
+    if (friend.btAddress === $rootScope.selectedFriend) {
       return "button-positive";
     } else {
       return "button-calm";
@@ -143,11 +162,11 @@ angular.module('sviitti.controllers', [])
     if ($scope.form.randomFriends) {
       $rootScope.mockFriends = Object.keys(Ship.plan.bssids).filter(function (a) {
         return Math.random() > 0.5;
-      }).map(function (bssid) {
+      }).map(function (bssid, index) {
         return {
-          user: "MockUser",
+          user: "MockUser" + index,
           bestBssid: bssid,
-          btAddress: "mockBtAddress" + Math.random(),
+          btAddress: "mockBtAddress" + index,
         };
       });
     } else {

@@ -60,12 +60,13 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
 
       function create() {
       }
-      return function(scope,elem,attrs) {
+      return function(scope, elem, attrs) {
         scope.onScroll = function() {
-          console.log("Scrolled. Should update Phaser zoom now.");
+          // FIXME: Not sure how to fix the pinch zoom without screwing up the touch positions.
+          /*console.log("Scrolled. Should update Phaser zoom now.");
           game.scale.scaleMode = Phaser.ScaleManager.NONE;
           // game.scale.setShowAll();
-          game.scale.refresh();
+          game.scale.refresh();*/
         };
         
         function drawCircle(x, y, color, dotColor, range) {
@@ -113,10 +114,10 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
                   console.log("Clicked friend: " + friend.btAddress);
                   $timeout(function() {
                     scope.$apply(function() {
-                      if (scope.selectedFriend == friend.btAddress) {
-                        scope.selectedFriend = undefined;
+                      if ($rootScope.selectedFriend == friend.btAddress) {
+                        $rootScope.selectedFriend = undefined;
                       } else {
-                        scope.selectedFriend = friend.btAddress;
+                        $rootScope.selectedFriend = friend.btAddress;
                       }
                     });
                   }, 0);
@@ -132,7 +133,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
                 console.log("Clicked self.");
                 $timeout(function() {
                   scope.$apply(function() {
-                    scope.selectedFriend = undefined;
+                    $rootScope.selectedFriend = undefined;
                   });
                 }, 0);
               };
@@ -152,8 +153,8 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
               return enlarge();
             }
             // Animating the user self, or the selected friend.
-            if (scope.selectedFriend && friendCircles[scope.selectedFriend]) {
-              bounce(friendCircles[scope.selectedFriend]);
+            if ($rootScope.selectedFriend && friendCircles[$rootScope.selectedFriend]) {
+              bounce(friendCircles[$rootScope.selectedFriend]);
             } else if (userCircle) {
               bounce(userCircle);
             }
@@ -161,7 +162,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
         };
         scope.$watch("floor", drawFloor);
         scope.$watch("friends", drawFloor);
-        scope.$watch("selectedFriend", drawFloor);
+        $rootScope.$watch("selectedFriend", drawFloor);
         $rootScope.$watch("bssid", drawFloor);
       };
     }
