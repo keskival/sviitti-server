@@ -14,8 +14,6 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
       const game = new Phaser.Game(Number(attrs.canvasWidth), Number(attrs.canvasHeight), Phaser.CANVAS,
           parentElement[0],
           { preload: preload, create: create });
-      // Allowing scrolling.
-      // input.enabled = false;      
       var maxWidth = 0, maxHeight = 0;
       var minX = 0;
       
@@ -84,7 +82,6 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
           var sprite = game.add.sprite(x, y);
           sprite.addChild(circle);
           sprite.inputEnabled = true;
-          // sprite.hitArea = new PIXI.Rectangle(0, 0, range, range);
           return sprite;
         };
         function drawLocation(bssidInfo, user, isSelf) {
@@ -102,7 +99,6 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
             game.world.removeAll();
             game.add.image(0, 0, "background");
             game.add.image(10 + floor.alignX, 10 + floor.alignY, floor.floorImage);
-            game.add.image(10 + floor.alignX, maxHeight + 60, floor.sideImage);
             // Draw the friends.
             friendCircles = {};
             scope.friends.forEach(function (friend) {
@@ -113,7 +109,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
                 function friendTapped() {
                   console.log("Clicked friend: " + friend.btAddress);
                   $timeout(function() {
-                    scope.$apply(function() {
+                    $rootScope.$apply(function() {
                       if ($rootScope.selectedFriend == friend.btAddress) {
                         $rootScope.selectedFriend = undefined;
                       } else {
@@ -132,7 +128,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
               function selfTapped() {
                 console.log("Clicked self.");
                 $timeout(function() {
-                  scope.$apply(function() {
+                  $rootScope.$apply(function() {
                     $rootScope.selectedFriend = undefined;
                   });
                 }, 0);
@@ -159,6 +155,21 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
               bounce(userCircle);
             }
           }
+          var offset = 0;
+          plan.floors.forEach(function(floor) {
+            var floorImage = game.add.image(0, 0, floor.sideImage);
+            var sprite = game.add.sprite(10 + floor.alignX, maxHeight + 60 + offset);
+            sprite.addChild(floorImage);
+            sprite.inputEnabled = true;
+            sprite.events.onInputDown.add(function() {
+              $timeout(function() {
+                scope.$apply(function() {
+                  scope.floor = floor.floor;
+                });
+              }, 0);
+            }, game);
+            offset = offset + extrudeAmount;
+          });
         };
         scope.$watch("floor", drawFloor);
         scope.$watch("friends", drawFloor);
