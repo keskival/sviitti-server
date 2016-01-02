@@ -21,6 +21,7 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
         game.input.mouse.capture = false;
         game.input.touch.preventDefault = false;
 
+        game.load.image("person_side", "/img/person_side.png");
         game.load.image("background", "/img/background.png");
         plan.floors.forEach(function(floor) {
           game.load.image(floor.floorImage, floor.floorImage);
@@ -92,6 +93,13 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
             dotColor = 0xff0000;
           }
           return drawCircle(bssidInfo.x, bssidInfo.y, color, dotColor, bssidInfo.range);
+        };
+        function drawLocationSide(floor, offset, bssidInfo, user, isSelf) {
+          var personImage = game.add.image(0, 0, "person_side");
+          var sprite = game.add.sprite(bssidInfo.x, maxHeight + 60 + 8 + offset);
+          sprite.addChild(personImage);
+          sprite.inputEnabled = true;
+          return sprite;
         };
         function drawFloor() {
           var floor = _.findWhere(plan.floors, {floor: scope.floor});
@@ -168,6 +176,17 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
                 });
               }, 0);
             }, game);
+
+            scope.friends.forEach(function (friend) {
+              if (plan.bssids[friend.bestBssid].floor == floor.floor) {
+                // The friend is on this floor.
+                var sprite = drawLocationSide(floor, offset, plan.bssids[friend.bestBssid], friend, false);
+              }
+            });
+            if ($rootScope.bssid && plan.bssids[$rootScope.bssid].floor == floor.floor) {
+              userCircle = drawLocationSide(floor, offset, plan.bssids[$rootScope.bssid], $rootScope.user, true);
+            }
+
             offset = offset + extrudeAmount;
           });
         };

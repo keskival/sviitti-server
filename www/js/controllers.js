@@ -78,7 +78,7 @@ angular.module('sviitti.controllers', [])
 .controller('ShipCtrl', function($scope, $rootScope, $timeout, Ship, Friends) {
   $scope.plan = Ship.plan;
   $timeout(function() {
-    scope.$apply(function() {
+    $scope.$apply(function() {
       if ($rootScope.bssid && plan.bssids[$rootScope.bssid].floor) {
         $scope.floor = Ship.plan.bssids[$rootScope.bssid].floor;
       }
