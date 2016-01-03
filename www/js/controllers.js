@@ -141,6 +141,36 @@ angular.module('sviitti.controllers', [])
     });
   });
 })
+
+.controller('MapCtrl', function($scope, $rootScope) {
+  var initialLocation;
+  var myOptions = {
+      zoom: 13,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  var map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+  // Try W3C Geolocation (Preferred)
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+      map.setCenter(initialLocation);
+      var locationCircle = new google.maps.Circle({
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        map: map,
+        center: initialLocation,
+        radius: 100
+      });
+
+    }, function() {
+      console.log("Error in geolocation.");
+    });
+  }
+})
   
 .controller('GenerateImagesCtrl', function($scope, $rootScope) {
   $scope.urls = [];

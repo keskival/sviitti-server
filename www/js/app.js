@@ -108,6 +108,15 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'LocalStorageModule',
         }
       }
   })
+  .state('tab.map', {
+    url: '/map',
+    views: {
+        'tab-map': {
+          templateUrl: 'templates/tab-map.html',
+          controller: 'MapCtrl'
+        }
+      }
+  })
   .state('tab.wireless', {
     url: '/wireless',
     views: {
