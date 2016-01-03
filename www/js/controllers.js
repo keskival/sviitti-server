@@ -129,7 +129,8 @@ angular.module('sviitti.controllers', [])
   };
   var map = new google.maps.Map(document.getElementById("map"), myOptions);
 
-  // Try W3C Geolocation (Preferred)
+  // Try W3C Geolocation
+  // FIXME: Use the offered API here.
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
