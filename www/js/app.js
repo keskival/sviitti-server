@@ -99,6 +99,15 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'LocalStorageModule',
         }
       }
   })
+  .state('tab.friends', {
+    url: '/friends',
+    views: {
+        'tab-friends': {
+          templateUrl: 'templates/tab-friends.html',
+          controller: 'FriendsCtrl'
+        }
+      }
+  })
   .state('tab.nearby', {
     url: '/nearby',
     views: {

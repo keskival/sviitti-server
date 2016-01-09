@@ -62,7 +62,7 @@ angular.module('sviitti.controllers', [])
         $rootScope.floor = Ship.plan.bssids[$rootScope.bssid].floor;
       }
     });
-  }, 200);
+  }, 0);
   
   $rootScope.$watch("mockFriends", function () {
     Friends.friends().then(function(friends) {
@@ -88,6 +88,21 @@ angular.module('sviitti.controllers', [])
     } else {
       return "button-calm";
     }
+  };
+})
+
+.controller('FriendsCtrl', function($scope, $rootScope, $timeout, Ship, Friends) {
+  $rootScope.$watch("mockFriends", function () {
+    Friends.friends().then(function(friends) {
+      $scope.friends = friends;
+    });
+  });
+  Friends.friends().then(function(friends) {
+    $scope.friends = friends;
+  });
+  $scope.selectFriend = function(friend) {
+    $rootScope.selectedFriend = friend.btAddress;
+    $rootScope.floor = Ship.plan.bssids[friend.bestBssid].floor;
   };
   $scope.highlightFriend = function(friend) {
     if (friend.btAddress === $rootScope.selectedFriend) {

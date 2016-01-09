@@ -1,27 +1,19 @@
-<ion-view view-title="Laiva">
+<ion-view hide-nav-bar="true">
   <ion-content>
     <div>
-      <h3>Kerros:</h3>
-      <button class="button" ng-class="highlight(floor)"
+      <button class="button button-small" ng-class="highlight(floor)"
         ng-repeat="floor in floors" ng-click="selectFloor(floor)">
         {{floor}}
       </button>
     </div>
     <!-- Zooming true causes trouble with touch screen tap handling: The taps do not align with the objects.
          Something wrong with Ionic ion-scroll and Phaser canvas interaction. -->
-    <ion-scroll zooming="false" direction="xy" style="width: 100vw; height: 60vh;" id="phaser-ship" min-zoom="0.1"
+    <ion-scroll zooming="false" direction="x" style="width: 100vw; height: 300px;" id="phaser-ship" min-zoom="0.1"
      on-scroll="onScroll()">
-       <sviitti-ship style="width: 1700px; height: 820px;" canvas-width="1700" canvas-height="820">
+       <sviitti-ship style="width: 1700px; height: 290px;" canvas-width="1700" canvas-height="300">
        </sviitti-ship>
     </ion-scroll>
-    <div style="height: 20vh; width: 100vh;">
-      <h3>Ystävät:</h3>
-      <p>
-      <button class="button" ng-class="highlightFriend(friend)"
-        ng-repeat="friend in friends" ng-click="selectFriend(friend)">
-        {{friend.user}}
-      </button>
-      </p>
-    </div>
+    <sviitti-ship side="1" style="width: 360px; height: 187px;" canvas-width="360" canvas-height="187">
+    </sviitti-ship>
   </ion-content>
 </ion-view>

@@ -1,8 +1,10 @@
 angular.module('sviitti.directives', []);
 
-angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q, $timeout, $rootScope) {
-  const extrudeAmount = 40;
+angular.module('sviitti.directives').directive('sviittiShip', function(
+    Ship, $q, $timeout, $rootScope, $window) {
+  const extrudeAmount = 12;
   const plan = Ship.plan;
+  const imagesLoadedPromise = $q.defer();
   var friendCircles = {},
     userCircle;
 
@@ -17,6 +19,10 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
       var maxWidth = 0, maxHeight = 0;
       var minX = 0;
       
+      var height = $window.innerHeight,
+        width = $window.innerWidth;
+      console.log("Resolution: " + width + " x " + height);
+      
       function preload() {
         game.input.mouse.capture = false;
         game.input.touch.preventDefault = false;
@@ -27,6 +33,11 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
           game.load.image(floor.floorImage, floor.floorImage);
           game.load.image(floor.sideImage, floor.sideImage);
         });
+        game.load.start();
+        game.load.onLoadComplete.add(function() {
+          imagesLoadedPromise.resolve(true);
+        }, this);
+
         plan.floors.forEach(function(floor) {
           var bb = floor.bb; // floor.bb_no_text || floor.bb;
           var w = bb[2] - bb[0];
@@ -94,16 +105,23 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
           }
           return drawCircle(bssidInfo.x, bssidInfo.y, color, dotColor, bssidInfo.range);
         };
-        function drawLocationSide(floor, offset, bssidInfo, user, isSelf) {
+        function drawLocationSide(floor, offset, bssidInfo, user, isSelf, scalingFactor,
+            height) {
           var personImage = game.add.image(0, 0, "person_side");
-          var sprite = game.add.sprite(bssidInfo.x, maxHeight + 60 + 8 + offset);
+          var sprite = game.add.sprite(bssidInfo.x / scalingFactor, offset);
           sprite.addChild(personImage);
+          sprite.height = height;
           sprite.inputEnabled = true;
           return sprite;
         };
         function drawFloor() {
+          imagesLoadedPromise.promise.then(function() {
+            drawFloor2();
+          });
+        };
+        function drawFloor2() {
           var floor = _.findWhere(plan.floors, {floor: $rootScope.floor});
-          if (floor != null) {
+          if (floor != null && !attrs.side) {
             game.world.removeAll();
             game.add.image(0, 0, "background");
             game.add.image(10 + floor.alignX, 10 + floor.alignY, floor.floorImage);
@@ -163,32 +181,44 @@ angular.module('sviitti.directives').directive('sviittiShip', function(Ship, $q,
               bounce(userCircle);
             }
           }
-          var offset = 0;
-          plan.floors.forEach(function(floor) {
-            var floorImage = game.add.image(0, 0, floor.sideImage);
-            var sprite = game.add.sprite(10 + floor.alignX, maxHeight + 60 + offset);
-            sprite.addChild(floorImage);
-            sprite.inputEnabled = true;
-            sprite.events.onInputDown.add(function() {
-              $timeout(function() {
-                scope.$apply(function() {
-                  $rootScope.floor = floor.floor;
-                });
-              }, 0);
-            }, game);
+          var offset = 5;
+          if (attrs.side) {
+            plan.floors.forEach(function(floor) {
+              var floorImage = game.add.image(0, 0, floor.sideImage);
+              // ~ 1400 / 360
+              var scalingFactor = 5.0;
+              var sprite = game.add.sprite(floor.alignX / scalingFactor, offset);
+              
+              sprite.addChild(floorImage);
+              // Not a clue why 3.0 is needed here.
+              sprite.height = extrudeAmount - 3.0;
+              sprite.width = sprite.width / scalingFactor;
+              sprite.inputEnabled = true;
+              sprite.events.onInputDown.add(function() {
+                $timeout(function() {
+                  scope.$apply(function() {
+                    $rootScope.floor = floor.floor;
+                  });
+                }, 0);
+              }, game);
 
-            scope.friends.forEach(function (friend) {
-              if (plan.bssids[friend.bestBssid].floor == floor.floor) {
-                // The friend is on this floor.
-                var sprite = drawLocationSide(floor, offset, plan.bssids[friend.bestBssid], friend, false);
+              scope.friends.forEach(function (friend) {
+                if (plan.bssids[friend.bestBssid].floor == floor.floor) {
+                  // The friend is on this floor.
+                  var sideSprite = drawLocationSide(floor, offset, plan.bssids[friend.bestBssid],
+                      friend, false, scalingFactor, sprite.height);
+                  sideSprite.bringToTop();
+                }
+              });
+              if ($rootScope.bssid && plan.bssids[$rootScope.bssid].floor == floor.floor) {
+                var userSideSprite = drawLocationSide(floor, offset, plan.bssids[$rootScope.bssid],
+                    $rootScope.user, true, scalingFactor, sprite.height);
+                userSideSprite.bringToTop();
               }
-            });
-            if ($rootScope.bssid && plan.bssids[$rootScope.bssid].floor == floor.floor) {
-              userCircle = drawLocationSide(floor, offset, plan.bssids[$rootScope.bssid], $rootScope.user, true);
-            }
 
-            offset = offset + extrudeAmount;
-          });
+              offset = offset + extrudeAmount;
+            });
+          }
         };
         $rootScope.$watch("floor", drawFloor);
         scope.$watch("friends", drawFloor);
