@@ -5,6 +5,8 @@
         <ion-item ng-repeat="person in people">
           <span>{{person.user}}</span>
           <img ng-if="user.photo" ng-attr-src="{{user.photo}}"/>
+          <button class="button button-balanced" ng-if="!person.myFriend">Lähetä kaveripyyntö</button>
+          <button class="button button-balanced">Aloita keskustelu</button>
         </ion-item>
       </ion-list>
     </ion-scroll>
