@@ -190,9 +190,8 @@ angular.module('sviitti.directives').directive('sviittiShip', function(
               var sprite = game.add.sprite(floor.alignX / scalingFactor, offset);
               
               sprite.addChild(floorImage);
+              sprite.scale.setTo(1 / scalingFactor, extrudeAmount / floorImage.height);
               // Not a clue why 3.0 is needed here.
-              sprite.height = extrudeAmount - 3.0;
-              sprite.width = sprite.width / scalingFactor;
               sprite.inputEnabled = true;
               sprite.events.onInputDown.add(function() {
                 $timeout(function() {
