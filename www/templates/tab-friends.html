@@ -1,11 +1,27 @@
 <ion-view hide-nav-bar="true">
   <ion-content>
-    <p>
-      <button class="button" ng-class="highlightFriend(friend)"
-        ng-repeat="friend in friends" ng-click="selectFriend(friend)">
+    <div ng-repeat="friend in friends">
+      <button class="button button-full" ng-class="highlightFriend(friend)"
+        ng-click="selectFriend(friend)">
         {{friend.user}}
       </button>
-    </p>
+      <div>
+        <button class="button button-balanced" ng-if="!friend.myFriend">Hyväksy kaveripyyntö</button>
+        <button class="button button-assertive" ng-if="!friend.myFriend">Hylkää kaveripyyntö</button>
+        <button class="button button-assertive" ng-if="friend.myFriend">Poista kavereista</button>
+      </div>
+      <h4>Ilmoitukset:</h4>
+      <ion-list>
+         <ion-item>
+            <ion-checkbox ng-model="friend.notifications.anniskelualue">anniskelualue</ion-checkbox>
+         </ion-item>
+         <ion-item>
+            <ion-checkbox ng-model="friend.notifications.taxfree">tax-free</ion-checkbox>
+         </ion-item>
+         <ion-item>
+            <ion-checkbox ng-model="friend.notifications.ravintola">ravintola</ion-checkbox>
+         </ion-item>
+      </ion-list>
     </div>
   </ion-content>
 </ion-view>
