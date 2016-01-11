@@ -3,8 +3,10 @@
     <ion-scroll direction="y">
       <ion-list>
         <ion-item ng-repeat="person in people">
-          <span>{{person.user}}</span>
-          <img ng-if="user.photo" ng-attr-src="{{user.photo}}"/>
+          <div>
+            <span>{{person.user}}</span>
+            <img ng-if="user.photo" ng-attr-src="{{user.photo}}"/>
+          </div>
           <button class="button button-balanced" ng-if="!person.myFriend">Lähetä kaveripyyntö</button>
           <button class="button button-balanced">Aloita keskustelu</button>
         </ion-item>
