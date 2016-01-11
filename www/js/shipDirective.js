@@ -121,8 +121,8 @@ angular.module('sviitti.directives').directive('sviittiShip', function(
         };
         function drawFloor2() {
           var floor = _.findWhere(plan.floors, {floor: $rootScope.floor});
+          game.world.removeAll();
           if (floor != null && !attrs.side) {
-            game.world.removeAll();
             game.add.image(0, 0, "background");
             game.add.image(10 + floor.alignX, 10 + floor.alignY, floor.floorImage);
             // Draw the friends.
@@ -181,9 +181,9 @@ angular.module('sviitti.directives').directive('sviittiShip', function(
               bounce(userCircle);
             }
           }
-          var offset = 5;
           if (attrs.side) {
-            plan.floors.forEach(function(floor) {
+            plan.floors.forEach(function(floor, index) {
+              var offset = 5 + index * extrudeAmount;
               var floorImage = game.add.image(0, 0, floor.sideImage);
               // ~ 1400 / 360
               var scalingFactor = 5.0;
@@ -215,8 +215,6 @@ angular.module('sviitti.directives').directive('sviittiShip', function(
                     $rootScope.user, true, scalingFactor, sprite.height);
                 userSideSprite.bringToTop();
               }
-
-              offset = offset + extrudeAmount;
             });
           }
         };
