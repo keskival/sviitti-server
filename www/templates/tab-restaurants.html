@@ -1,12 +1,38 @@
 <ion-view hide-nav-bar="true">
   <ion-content>
-    <ion-list>
+    <ion-list ng-if="!showReservationDialog">
       <ion-item ng-repeat="restaurant in restaurants" class="item-text-wrap">
         <h1>{{restaurant.name}}</h1>
         <img ng-src="{{restaurant.image}}"/>
         <p>{{restaurant.description}}</p>
-        <button class="button button-balanced" ng-if="restaurant.reservations">Tee varaus</button>
+        <button class="button button-balanced" ng-if="restaurant.reservations" ng-click="makeReservation(restaurant)">Tee varaus</button>
       </ion-item>
     </ion-list>
+    <div id="reservationForm" ng-if="showReservationDialog">
+      <form ng-model="reservation">
+        <h1>Tee varaus: {{reservation.restaurantName}}</h1>
+        <label class="item item-input">
+          <span class="input-label">Päivämäärä:</span>
+          <ionic-datepicker input-obj="datePickerObject">
+            <button class="button button-block button-positive">{{datePickerObject.dateAsString || "Valitse päivämäärä"}}</button>
+          </ionic-datepicker>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Aika:</span>
+          <ionic-timepicker input-obj="timePickerObject">
+            <button class="button button-block button-positive overflowShow">
+              {{timePickerObject.timeAsString || "Valitse aika"}}
+            </button>
+          </ionic-timepicker>
+        </label>
+        
+        <label class="item item-input">
+          <span class="input-label">Montako henkilöä?</span>
+          <input type="number" ng-model="reservation.number">
+        </label>
+        <button class="button button-assertive" ng-click="cancel()">Peruuta</button>
+        <button class="button button-balanced" ng-click="submit()">Lähetä varaus</button>
+      </form>
+    </div>
   </ion-content>
 </ion-view>

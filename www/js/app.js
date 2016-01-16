@@ -167,3 +167,4 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'LocalStorageModule',
   $urlRouterProvider.otherwise('/tab/welcome');
 
 });
+angular.module('sviitti.services', []);

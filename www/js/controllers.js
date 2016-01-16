@@ -1,4 +1,4 @@
-angular.module('sviitti.controllers', [])
+angular.module('sviitti.controllers', ['ionic-timepicker', 'ionic-datepicker'])
 
 .controller('WelcomeCtrl', function($scope, $rootScope, $cordovaOauth, $http, $timeout) {
   $scope.setNickname = function (nickname) {
@@ -136,8 +136,116 @@ angular.module('sviitti.controllers', [])
   });
 })
 
-.controller('RestaurantsCtrl', function($scope, $rootScope, $timeout, POIs) {
+.controller('RestaurantsCtrl', function($scope, $rootScope, $timeout, $http, POIs) {
   $scope.restaurants = POIs.restaurants;
+  $scope.makeReservation = function(restaurant) {
+    $timeout(function() {
+      $scope.$apply(function() {
+        $scope.showReservationDialog = true;
+        $scope.reservation = {
+            userName: $rootScope.user.name,
+            bestBssid: $rootScope.bssid,
+            btAddress: $rootScope.btAddress,
+            restaurantName: restaurant.name,
+            number: 1
+          };
+      });
+    }, 0);
+  };
+  $scope.uniqueId = 0;
+  $scope.cancel = function() {
+    $scope.showReservationDialog = false;
+    $scope.reservation = undefined;
+  };
+  $scope.submit = function() {
+    var minutes = "" + $scope.reservation.time.getUTCMinutes();
+    if (minutes.length < 2) {
+      minutes = "0" + minutes;
+    }
+    var timeStr = $scope.reservation.time.getUTCHours() + ":" + minutes;
+    var reservation = {
+        userName: $scope.reservation.user,
+        bestBssid: $scope.reservation.bssid,
+        btAddress: $scope.reservation.btAddress,
+        restaurantName: $scope.reservation.restaurantName,
+        number: $scope.reservation.number,
+        date: $scope.reservation.date.toISOString().slice(0, 10),
+        time: timeStr
+        };
+    $http.put("reservation", reservation);
+    // Now all reservations are just simply accepted, pending restaurant UI.
+    console.log("Made reservation for: " + JSON.stringify(reservation));
+    if (!$rootScope.user.reservations) {
+      $rootScope.user.reservations = [];
+    }
+    $rootScope.user.reservations.push($scope.reservation);
+    // Faking the response.
+    var notification = {
+        id: $scope.uniqueId,
+        text: "Pöytävarauksesi on hyväksytty: " + $scope.reservation.restaurantName + ", kello: " +
+          $scope.reservation.date.toISOString().slice(0, 10) + " " + timeStr + ", " + $scope.reservation.number + " henkeä.",
+        data: { key: $scope.uniqueId, reservation: reservation
+        }
+      };
+    $scope.uniqueId = $scope.uniqueId + 1;
+    console.log("Showing notification: " + JSON.stringify(notification));
+    if (window.cordova && window.cordova.plugins && window.cordova.plugins.notification) {
+      window.cordova.plugins.notification.local.schedule(notification);
+    }
+    $scope.showReservationDialog = false;
+    $scope.reservation = undefined;
+  };
+  $scope.datePickerObject = {
+      titleLabel: 'Varauksen päivämäärä',
+      todayLabel: 'Tänään',
+      closeLabel: 'Peruuta',
+      setLabel: 'Aseta',
+      setButtonType : 'button-balanced',
+      todayButtonType : 'button-positive',
+      closeButtonType : 'button-assertive',
+      inputDate: new Date(),
+      mondayFirst: true,
+      templateType: 'popup',
+      showTodayButton: 'true',
+      modalHeaderColor: 'bar-positive',
+      modalFooterColor: 'bar-positive',
+      from: new Date(2016,1,12),
+      to: new Date(2016, 1, 14),
+      callback: function (val) {
+        $scope.reservation.date = val;
+        $scope.datePickerObject.dateAsString = "";
+        if (val) {
+          $scope.datePickerObject.dateAsString = val.toISOString().slice(0, 10);
+        }
+      },
+      dateFormat: 'dd-MM-yyyy',
+      closeOnSelect: false,
+    };
+  $scope.timePickerObject = {
+      inputEpochTime: (12 * 60 * 60),
+      step: 15,
+      format: 24,
+      titleLabel: 'Varauksen aika',
+      setLabel: 'Aseta',
+      closeLabel: 'Peruuta',
+      setButtonType: 'button-balanced',
+      closeButtonType: 'button-assertive',
+      callback: function (val) {
+        if (val) {
+          var selectedTime = new Date(val * 1000);
+          $scope.reservation.time = selectedTime;
+          var minutes = "" + selectedTime.getUTCMinutes();
+          if (minutes.length < 2) {
+            minutes = "0" + minutes;
+          }
+          $scope.timePickerObject.timeAsString = selectedTime.getUTCHours() + ":" +
+            minutes;
+        } else {
+          $scope.reservation.time = undefined;
+          $scope.timePickerObject.timeAsString = undefined;
+        }
+      }
+    };
 })
 
 .controller('MapCtrl', function($scope, $rootScope) {
