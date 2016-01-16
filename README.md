@@ -11,6 +11,7 @@ Features:
 - Bluetooth Low-Energy
 - Bluetooth (plain)
 - WLAN
+- Notifications
 - Ship visualization
 - Export PNGs of the ship layout layers for faster use.
 - Connect Bluetooth MACs to user profiles and locations.
@@ -21,6 +22,7 @@ Features:
 - Show own location.
 - Show friend locations.
 - Show nearby friends.
+- Restaurant reservations.
 
 TODO:
 =====
