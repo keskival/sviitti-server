@@ -1,7 +1,7 @@
 <ion-view hide-nav-bar="true">
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="restaurant in restaurants">
+      <ion-item ng-repeat="restaurant in restaurants" class="item-text-wrap">
         <h1>{{restaurant.name}}</h1>
         <img ng-src="{{restaurant.image}}"/>
         <p>{{restaurant.description}}</p>
