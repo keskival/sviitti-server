@@ -1,7 +1,7 @@
 angular.module('sviitti.directives', []);
 
 angular.module('sviitti.directives').directive('sviittiShip', function(
-    Ship, $q, $timeout, $rootScope, $window) {
+    Ship, POIs, $q, $timeout, $rootScope, $window) {
   const extrudeAmount = 12;
   const plan = Ship.plan;
   const imagesLoadedPromise = $q.defer();
@@ -29,10 +29,22 @@ angular.module('sviitti.directives').directive('sviittiShip', function(
 
         game.load.image("person_side", "/img/person_side.png");
         game.load.image("background", "/img/background.png");
+        
+        // Loading the icons for all the POIs.
+        POIs.restaurants.forEach(function(restaurant) {
+          game.load.image(restaurant.icon, restaurant.icon);
+        });
+        POIs.bars.forEach(function(bar) {
+          game.load.image(bar.icon, bar.icon);
+        });
+        POIs.shops.forEach(function(shop) {
+          game.load.image(shop.icon, shop.icon);
+        });
         plan.floors.forEach(function(floor) {
           game.load.image(floor.floorImage, floor.floorImage);
           game.load.image(floor.sideImage, floor.sideImage);
         });
+
         game.load.start();
         game.load.onLoadComplete.add(function() {
           imagesLoadedPromise.resolve(true);
@@ -114,6 +126,16 @@ angular.module('sviitti.directives').directive('sviittiShip', function(
           sprite.inputEnabled = true;
           return sprite;
         };
+        function drawIcon(icon, x, y) {
+          var iconImage = game.add.image(0, 0, icon);
+          var sprite = game.add.sprite(x, y);
+          sprite.anchor.setTo(0.5, 0.5);
+          sprite.addChild(iconImage);
+          sprite.width = 1.5;
+          sprite.height = 1.5;
+          sprite.inputEnabled = true;
+          return sprite;
+        };
         function drawFloor() {
           imagesLoadedPromise.promise.then(function() {
             drawFloor2();
@@ -161,14 +183,21 @@ angular.module('sviitti.directives').directive('sviittiShip', function(
               };
               userCircle.events.onInputDown.add(selfTapped, game);
             }
-            function bounce(circle) {
+            function bounce(circle, speed) {
+              if (!speed) {
+                speed = 200;
+              }
+              var originalScale = {
+                  x: circle.scale.x,
+                  y: circle.scale.y
+              }
               function enlarge() {
-                var tween = game.add.tween(circle.scale).to( { x: 1.1, y: 1.1 }, 100, Phaser.Easing.Linear.None, true);
+                var tween = game.add.tween(circle.scale).to( { x: 1.1 * originalScale.x, y: 1.1 * originalScale.y }, speed, Phaser.Easing.Linear.None, true);
                 tween.onComplete.add(shrink, game);
                 return tween;
               };
               function shrink() {
-                var tween = game.add.tween(circle.scale).to( { x: 1, y: 1 }, 100, Phaser.Easing.Linear.None, true);
+                var tween = game.add.tween(circle.scale).to( { x: originalScale.x, y: originalScale.y }, speed, Phaser.Easing.Linear.None, true);
                 tween.onComplete.add(enlarge, game);
                 return tween;
               };
@@ -180,6 +209,26 @@ angular.module('sviitti.directives').directive('sviittiShip', function(
             } else if (userCircle) {
               bounce(userCircle);
             }
+            
+            // Drawing POIs such as restaurants and such.
+            POIs.restaurants.forEach(function(restaurant) {
+              if (restaurant.floor === floor.floor) {
+                var icon = drawIcon(restaurant.icon, floor.alignX + restaurant.x, floor.alignY + restaurant.y);
+                bounce(icon, 500);
+              }
+            });
+            POIs.bars.forEach(function(bar) {
+              if (bar.floor === floor.floor) {
+                var icon = drawIcon(bar.icon, floor.alignX + bar.x, floor.alignY + bar.y);
+                bounce(icon, 500);
+              }
+            });
+            POIs.shops.forEach(function(shop) {
+              if (shop.floor === floor.floor) {
+                var icon = drawIcon(shop.icon, floor.alignX + shop.x, floor.alignY + shop.y);
+                bounce(icon, 500);
+              }
+            });
           }
           if (attrs.side) {
             plan.floors.forEach(function(floor, index) {

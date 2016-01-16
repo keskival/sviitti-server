@@ -136,6 +136,10 @@ angular.module('sviitti.controllers', [])
   });
 })
 
+.controller('RestaurantsCtrl', function($scope, $rootScope, $timeout, POIs) {
+  $scope.restaurants = POIs.restaurants;
+})
+
 .controller('MapCtrl', function($scope, $rootScope) {
   var initialLocation;
   var myOptions = {

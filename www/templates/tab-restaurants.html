@@ -1,0 +1,12 @@
+<ion-view hide-nav-bar="true">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="restaurant in restaurants">
+        <h1>{{restaurant.name}}</h1>
+        <img ng-src="{{restaurant.image}}"/>
+        <p>{{restaurant.description}}</p>
+        <button class="button button-balanced" ng-if="restaurant.reservations">Tee varaus</button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

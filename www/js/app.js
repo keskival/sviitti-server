@@ -126,6 +126,15 @@ angular.module('sviitti', ['ionic', 'ngCordova', 'LocalStorageModule',
         }
       }
   })
+  .state('tab.restaurants', {
+    url: '/restaurants',
+    views: {
+        'tab-restaurants': {
+          templateUrl: 'templates/tab-restaurants.html',
+          controller: 'RestaurantsCtrl'
+        }
+      }
+  })
   .state('tab.wireless', {
     url: '/wireless',
     views: {
