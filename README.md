@@ -5,7 +5,9 @@ License: ISC
 Run with:
 > docker-compose up
 
-Features:
+Features
+========
+
 - CouchDB
 - Facebook login, or login with nick name
 - Bluetooth Low-Energy
@@ -24,8 +26,37 @@ Features:
 - Show nearby friends.
 - Restaurant reservations.
 
-TODO:
-=====
+Theme music for the competition
+===============================
+
+- [silja14.sng](media/silja14.sng)
+- [silja14.sid](media/silja14.sid)
+- [silja14.wav](media/silja14.wav)
+- [silja14.avi](media/silja14.avi)
+
+Screenshots
+===========
+
+![login](media/login1.png)
+
+![login](media/login2.png)
+
+![map](media/map.png)
+
+![nearby](media/nearby.png)
+
+![friends](media/friends.png)
+
+![restaurants](media/restaurants.png)
+
+![reservations](media/reservations.png)
+
+![reservations](media/reservations2.png)
+
+![notification](media/notification.png)
+
+TODO
+====
 
 - Manage friends.
 - Interactive pop ups for location circles.
