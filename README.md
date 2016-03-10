@@ -37,23 +37,28 @@ Theme music for the competition
 Screenshots
 ===========
 
-![login](media/login1.png)
+Login:
+![login](media/login1.png =250x)
+![login](media/login2.png =250x)
 
-![login](media/login2.png)
+Map:
+![map](media/map.png =250x)
 
-![map](media/map.png)
+Showing nearby people based on Bluetooth:
+![nearby](media/nearby.png =250x)
 
-![nearby](media/nearby.png)
+Showing your friends, allowing notifications for locations:
+![friends](media/friends.png =250x)
 
-![friends](media/friends.png)
+Restaurants:
+![restaurants](media/restaurants.png =250x)
 
-![restaurants](media/restaurants.png)
+Reservations on the restaurants:
+![reservations](media/reservations.png =250x)
+![reservations](media/reservations2.png =250x)
 
-![reservations](media/reservations.png)
-
-![reservations](media/reservations2.png)
-
-![notification](media/notification.png)
+Notifications on your reservations:
+![notification](media/notification.png =250x)
 
 TODO
 ====
