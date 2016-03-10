@@ -1,6 +1,6 @@
 Copyright: Cybercom Finland Oy
 
-No open source licensing. Ask permission from: tero.keski-valkama@cybercom.com
+License: ISC
 
 Run with:
 > docker-compose up
