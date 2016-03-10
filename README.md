@@ -38,26 +38,33 @@ Screenshots
 ===========
 
 Login:
+
 <img src="media/login1.png" width="250"/>
 <img src="media/login2.png" width="250"/>
 
 Map:
+
 <img src="media/map.png" width="250"/>
 
 Showing nearby people based on Bluetooth:
+
 <img src="media/nearby.png" width="250"/>
 
 Showing your friends, allowing notifications for locations:
+
 <img src="media/friends.png" width="250"/>
 
 Restaurants:
+
 <img src="media/restaurants.png" width="250"/>
 
 Reservations on the restaurants:
+
 <img src="media/reservations.png" width="250"/>
 <img src="media/reservations2.png" width="250"/>
 
 Notifications on your reservations:
+
 <img src="media/notification.png" width="250"/>
 
 TODO
