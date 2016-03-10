@@ -31,8 +31,8 @@ Theme music for the competition
 
 - [silja14.sng](media/silja14.sng)
 - [silja14.sid](media/silja14.sid)
-- [silja14.wav](media/silja14.wav)
-- [silja14.avi](media/silja14.avi)
+- [silja.wav](media/silja.wav)
+- [silja.avi](media/silja.avi)
 
 Screenshots
 ===========
