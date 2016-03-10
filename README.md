@@ -38,27 +38,27 @@ Screenshots
 ===========
 
 Login:
-![login](media/login1.png =250x)
-![login](media/login2.png =250x)
+<img src="media/login1.png" width="250"/>
+<img src="media/login2.png" width="250"/>
 
 Map:
-![map](media/map.png =250x)
+<img src="media/map.png" width="250"/>
 
 Showing nearby people based on Bluetooth:
-![nearby](media/nearby.png =250x)
+<img src="media/nearby.png" width="250"/>
 
 Showing your friends, allowing notifications for locations:
-![friends](media/friends.png =250x)
+<img src="media/friends.png" width="250"/>
 
 Restaurants:
-![restaurants](media/restaurants.png =250x)
+<img src="media/restaurants.png" width="250"/>
 
 Reservations on the restaurants:
-![reservations](media/reservations.png =250x)
-![reservations](media/reservations2.png =250x)
+<img src="media/reservations.png" width="250"/>
+<img src="media/reservations2.png" width="250"/>
 
 Notifications on your reservations:
-![notification](media/notification.png =250x)
+<img src="media/notification.png" width="250"/>
 
 TODO
 ====
